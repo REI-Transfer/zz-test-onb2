@@ -9,9 +9,9 @@
  * and the daily send ledger live in n8n where they can be inspected and replayed.
  */
 
-import { timingSafeEqual } from "node:crypto"
 import { NextResponse } from "next/server"
 import { z } from "zod"
+import { authorize } from "@/lib/acquisition/auth"
 import { evaluateListing } from "@/lib/acquisition/pipeline"
 
 // The vision pass makes this materially slower than a typical route.
@@ -84,32 +84,6 @@ const RequestSchema = z.object({
   submarketMedianPerSqft: z.number().positive().optional(),
   sentToday: z.number().int().nonnegative().optional(),
 })
-
-/** Constant-time compare so the shared secret can't be recovered by timing the endpoint. */
-function secretMatches(provided: string, expected: string): boolean {
-  const a = Buffer.from(provided)
-  const b = Buffer.from(expected)
-  if (a.length !== b.length) return false
-  return timingSafeEqual(a, b)
-}
-
-function authorize(request: Request): NextResponse | null {
-  const expected = process.env.ACQ_API_SECRET
-  // Fail closed. An unset secret means misconfiguration, not "open to everyone" —
-  // this endpoint renders priced offers and must never be publicly callable.
-  if (!expected) {
-    console.error("[acquisition] ACQ_API_SECRET is not set; refusing all requests")
-    return NextResponse.json({ error: "Endpoint not configured" }, { status: 503 })
-  }
-
-  const header = request.headers.get("authorization") ?? ""
-  const token = header.startsWith("Bearer ") ? header.slice(7) : ""
-  if (!token || !secretMatches(token, expected)) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-  }
-
-  return null
-}
 
 export async function POST(request: Request) {
   const denied = authorize(request)

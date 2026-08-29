@@ -65,6 +65,22 @@ const acquisitionConfig = {
   visionMaxPhotos: num(process.env.ACQ_VISION_MAX_PHOTOS, 8),
   visionModel: process.env.ACQ_VISION_MODEL ?? "claude-opus-5",
 
+  // --- Email negotiation ---
+  /** Master switch. When false, every inbound reply escalates to a human. */
+  negotiationEnabled: process.env.NEGOTIATION_ENABLED === "true",
+  /**
+   * Walk-away ceiling as a multiple of ARV, before repairs. Must exceed
+   * offerArvMultiplier — the difference IS your negotiating room. At the defaults,
+   * offers open at 0.75 x ARV - repairs and can reach 0.80 x ARV - repairs.
+   */
+  negotiationMaxArvMultiplier: num(process.env.NEGOTIATION_MAX_ARV_MULTIPLIER, 0.80),
+  /**
+   * Fraction of the remaining gap to concede at each round, comma-separated. Length
+   * sets the maximum number of concessions. Shrinking steps signal an approaching
+   * floor, which is both true and useful.
+   */
+  negotiationConcessionSteps: process.env.NEGOTIATION_CONCESSION_STEPS ?? "0.4,0.3,0.2",
+
   // --- LOI content ---
   buyerEntity:      process.env.LOI_BUYER_ENTITY      ?? "",
   buyerSignerName:  process.env.LOI_SIGNER_NAME       ?? "",

@@ -84,6 +84,58 @@ qualifying threshold — cheap filters run first precisely to keep this bill dow
 `ACQ_VISION_MAX_PHOTOS` or point `ACQ_VISION_MODEL` at a smaller model if volume makes
 it material.
 
+## Email negotiation (`negotiation/`)
+
+Once an LOI goes out, inbound replies flow through `POST /api/acquisition/reply`:
+
+```
+classify (LLM, data-only) → decide (code) → draft (LLM, prose only) → validate (code)
+```
+
+**The model never chooses a number.** `policy.ts` computes every price from the
+concession ladder; the model classifies what came back and writes prose around a
+number already decided. That makes a successful prompt injection in an agent's email
+a wording nuisance rather than a financial event.
+
+Two rules are not configurable, on purpose:
+
+- **The bot never accepts.** A counter inside your authority escalates to you, and you
+  write the contract. Automated systems should not create binding obligations to buy
+  real property.
+- **The bot never bids against itself.** A rejection with no counter triggers no
+  concession — only a live counter above your standing number does.
+
+Authority: offers open at `ARV × 0.75 − repairs` and can reach
+`ARV × NEGOTIATION_MAX_ARV_MULTIPLIER − repairs` across three shrinking concessions.
+`validateOutboundOffer()` re-checks every number immediately before send, independent
+of the model, and fails closed to a human.
+
+Escalates to you: counter within authority, acceptance, new facts that change the
+underwriting, ladder exhausted, unclassifiable reply, or any message containing text
+addressed at an automated system.
+
+## Feedback loop (`outcomes.ts`)
+
+A **calibration** loop, not a learning system. It logs predictions, joins them to
+outcomes, measures error, and *proposes* bounded config changes for you to approve.
+It never applies them.
+
+That restraint is statistical, not timid. At ~500 sends and 1–3 contracts a month, with
+repair ground truth arriving months later, fitting anything to that volume chases noise.
+Signal quality, best first:
+
+1. **Repair estimates vs. real invoices** — exact ground truth; 8–10 rehabs reveal bias.
+2. **Condition tier vs. walked properties** — cheap, fast, learned every site visit.
+3. **Agent replies as free labels** — "roof was done in 2023" is a human correcting your
+   condition read at no cost. Highest-volume ground truth you have.
+4. **Email A/B on reply rate** — run *quarterly*. `requiredSampleForLift(0.05, 0.07)`
+   returns ~2,200 per arm; a month of sending cannot settle it.
+
+Proposals are clamped to ±20% per cycle and flagged non-actionable below minimum
+sample size. **`OFFER_ARV_MULTIPLIER` has no proposal path at all** — acceptance rate
+rises monotonically as you pay more, so an optimizer pointed at it converges on paying
+full price, having correctly maximized the metric it was given.
+
 ## Adding an MLS source
 
 `types.ts` defines the normalized `Listing` shape, aligned to the RESO Data Dictionary so
