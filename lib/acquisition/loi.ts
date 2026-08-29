@@ -14,7 +14,12 @@
 import acquisitionConfig from "./config"
 import type { ConditionAssessment, Listing, OfferResult, RepairEstimate } from "./types"
 
-const usd = (n: number): string => `$${Math.round(n).toLocaleString("en-US")}`
+const usd = (n: number): string => {
+  if (!Number.isFinite(n)) {
+    throw new Error(`Refusing to render a letter with a non-numeric dollar amount: ${n}`)
+  }
+  return `$${Math.round(n).toLocaleString("en-US")}`
+}
 
 const addDays = (days: number): string => {
   const d = new Date()
@@ -57,7 +62,7 @@ export function renderLoi({ listing, offer, repairs, condition }: LoiInput): {
 
   const body = `Hi ${agentFirstName},
 
-I'd like to submit a cash offer on ${addr} (MLS# ${listing.listingId}), listed at ${usd(listing.listPrice)}.
+Submitting a cash offer on ${addr} (MLS# ${listing.listingId}), currently listed at ${usd(listing.listPrice)}.
 
   Offer price:      ${usd(offer.offerPrice)}
   Terms:            All cash, no financing contingency

@@ -76,7 +76,7 @@ const T2: TouchTemplate = {
   subject: "",
   body: `Hi {{agentFirstName}},
 
-Following up on {{street}} — I want to make it easy to check that we're a real buyer before you spend any time on this.
+Before you spend any time on my offer for {{street}}, here's how to check we're a real buyer.
 
 {{buyerEntity}} buys with our own funds. Happy to send proof of funds and a title company reference today, and you're welcome to call any of them. We close on our own timeline and we don't reassign contracts to a third party after you've taken it to your seller.
 
