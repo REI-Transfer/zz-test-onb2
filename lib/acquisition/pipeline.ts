@@ -10,6 +10,7 @@ import { applyVisionResult, assessCondition } from "./condition"
 import acquisitionConfig from "./config"
 import { renderLoi } from "./loi"
 import { computeOffer } from "./offer"
+import { priorityScore } from "./priority"
 import { estimateRepairs } from "./repairs"
 import type { ArvEstimate, EvaluationResult, Listing, OwnershipEnrichment } from "./types"
 import { assessPhotos } from "./vision"
@@ -56,7 +57,7 @@ const rejected = (listing: Listing, reason: string): EvaluationResult => ({
     visionApplied: false,
     signalConfidence: 0,
   },
-  repairs: { total: 0, perSqft: 0, tier: "COSMETIC", lineItems: {}, sqftKnown: false },
+  repairs: { total: 0, perSqft: 0, tier: "COSMETIC", marketTier: "STANDARD", costMultiplier: 1, lineItems: {}, sqftKnown: false },
   offer: {
     decision: "REJECT",
     offerPrice: null,
@@ -67,6 +68,7 @@ const rejected = (listing: Listing, reason: string): EvaluationResult => ({
     reasons: [reason],
   },
   loi: null,
+  priority: 0,
   evaluatedAt: new Date().toISOString(),
 })
 
@@ -114,6 +116,7 @@ export async function evaluateListing({
     repairs,
     offer,
     loi: offer.decision === "REJECT" ? null : renderLoi({ listing, offer, repairs, condition }),
+    priority: priorityScore({ listing, offer }),
     evaluatedAt: new Date().toISOString(),
   }
 }

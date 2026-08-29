@@ -109,8 +109,13 @@ export type ConditionAssessment = {
 export type RepairEstimate = {
   /** Whole dollars. */
   total: number
+  /** Effective rate after the regional multiplier. */
   perSqft: number
   tier: ConditionTier
+  /** Market cost band for the listing's county. See regions.ts. */
+  marketTier: string
+  /** Regional multiplier applied to the base rate. */
+  costMultiplier: number
   /** Named line items (base rehab, roof, HVAC, contingency). */
   lineItems: Record<string, number>
   /** False when livingArea was missing and a fallback sqft was assumed. */
@@ -143,5 +148,10 @@ export type EvaluationResult = {
   offer: OfferResult
   /** Rendered LOI. Null when decision is REJECT. */
   loi: { subject: string; body: string; toEmail?: string } | null
+  /**
+   * 0-100 send priority. At statewide scope more listings qualify than the daily cap
+   * allows, so the queue must be worked best-first. See priority.ts.
+   */
+  priority: number
   evaluatedAt: string
 }

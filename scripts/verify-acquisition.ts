@@ -108,14 +108,30 @@ async function main() {
         }),
     },
     {
-      name: "Out-of-market county",
-      expect: "REJECT",
+      // Statewide is now the default (ACQ_ALLOWED_COUNTIES empty), so South Florida is
+      // in scope. Priced to the market: a Tampa list price with Miami-Dade rehab costs
+      // correctly fails the offer-to-list floor, which is the bands working, not a bug.
+      name: "Miami-Dade in scope statewide",
+      expect: "REVIEW",
       run: () =>
         evaluateListing({
           listing: baseListing({
-            address: { ...baseListing().address, county: "Miami-Dade" },
+            listPrice: 550_000,
+            address: { ...baseListing().address, county: "Miami-Dade", city: "Miami" },
           }),
-          arv: goodComps,
+          arv: { ...goodComps, arv: 750_000 },
+        }),
+    },
+    {
+      name: "Monroe County holds on flood exposure",
+      expect: "REVIEW",
+      run: () =>
+        evaluateListing({
+          listing: baseListing({
+            listPrice: 550_000,
+            address: { ...baseListing().address, county: "Monroe", city: "Key West" },
+          }),
+          arv: { ...goodComps, arv: 750_000 },
         }),
     },
   ]
@@ -136,6 +152,35 @@ async function main() {
     for (const r of result.offer.reasons) console.log(`        · ${r}`)
     console.log()
   }
+
+  // --- Regional cost banding ---
+  const { estimateRepairs: est } = await import("../lib/acquisition/repairs")
+  const rural = est({ listing: baseListing({ address: { ...baseListing().address, county: "Liberty" } }), tier: "HEAVY" })
+  const metro = est({ listing: baseListing({ address: { ...baseListing().address, county: "Hillsborough" } }), tier: "HEAVY" })
+  const premium = est({ listing: baseListing({ address: { ...baseListing().address, county: "Miami-Dade" } }), tier: "HEAVY" })
+
+  const banded = rural.total < metro.total && metro.total < premium.total
+  if (!banded) failures++
+  console.log(
+    `${banded ? "PASS" : "FAIL"}  ${"Repair cost bands by region".padEnd(38)} → ` +
+      `Liberty $${rural.total.toLocaleString()} < Hillsborough $${metro.total.toLocaleString()} < Miami-Dade $${premium.total.toLocaleString()}`,
+  )
+  console.log()
+
+  // --- Send priority: the day's cap must go to the best deals, not the first ones ---
+  const { priorityScore } = await import("../lib/acquisition/priority")
+  const strong = priorityScore({
+    listing: baseListing({ daysOnMarket: 150 }),
+    offer: { decision: "SEND", offerPrice: 260_000, arv: 420_000, repairs: 100_000, confidence: 95, confidenceBreakdown: {}, reasons: [] },
+  })
+  const weak = priorityScore({
+    listing: baseListing({ daysOnMarket: 2 }),
+    offer: { decision: "SEND", offerPrice: 160_000, arv: 420_000, repairs: 100_000, confidence: 55, confidenceBreakdown: {}, reasons: [] },
+  })
+  const ranked = strong > weak
+  if (!ranked) failures++
+  console.log(`${ranked ? "PASS" : "FAIL"}  ${"Priority ranks strong over weak".padEnd(38)} → ${strong} vs ${weak}`)
+  console.log()
 
   // The SEND path needs a vision-backed condition read, which the pipeline can only get
   // from a live API call. Exercise the gate directly instead, with a synthetic

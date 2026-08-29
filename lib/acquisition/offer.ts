@@ -16,6 +16,7 @@
  */
 
 import acquisitionConfig from "./config"
+import { hasCoastalExposure } from "./regions"
 import type { ArvEstimate, ConditionAssessment, Listing, OfferResult, OwnershipEnrichment, RepairEstimate } from "./types"
 
 /** Coefficient of variation of comp $/sqft. Tight clusters mean a trustworthy ARV. */
@@ -168,6 +169,15 @@ export function computeOffer({
 
   if (!repairs.sqftKnown) {
     hold("Living area missing from the feed; repair budget uses the fallback square footage.")
+  }
+
+  // Statewide scope brings in coastal counties where flood zone, elevation and
+  // insurability can dominate the rehab number outright. The pipeline has no elevation
+  // data, so it declines to auto-send rather than pretending it priced the risk.
+  if (hasCoastalExposure(listing.address.county)) {
+    hold(
+      `${listing.address.county} County carries wind/flood exposure the pipeline cannot price; confirm flood zone and insurability before offering.`,
+    )
   }
 
   if (!condition.visionApplied) {

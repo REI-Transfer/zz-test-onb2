@@ -47,6 +47,24 @@ recoverable — you can replay an execution and see exactly what would have gone
    for email use the thread id or a plus-address; for SMS, look up
    `acq_threads.agent_phone`.
 
+## Statewide volume: split intake from sending
+
+`01-listing-intake.json` sends the LOI inline, which is fine at pilot scope. Statewide it
+is wrong: the daily cap becomes binding, and sending inline means the day's mail goes to
+whichever counties the MLS feed happened to return first.
+
+Split it into two workflows:
+
+1. **Intake** — evaluate and write to `acq_predictions` (including `priority`). Stop there.
+   Remove the `Open Negotiation Thread → Send LOI → Log Send` branch.
+2. **Drain** — a separate schedule (say hourly) that reads
+   `select * from acq_send_queue limit <remaining cap>`, opens the thread, sends, logs.
+
+The `acq_send_queue` view (migration 0002) handles best-first ordering, excludes
+already-sent listings, drops decisions older than 48 hours, and filters suppressed
+agents — that last one matters more statewide, since a statewide feed will surface
+listings from agents who opted out in a different county.
+
 ## Before enabling SMS
 
 One thing worth knowing, because it is genuinely counterintuitive: **the TCPA has no

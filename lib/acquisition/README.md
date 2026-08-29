@@ -136,6 +136,34 @@ sample size. **`OFFER_ARV_MULTIPLIER` has no proposal path at all** — acceptan
 rises monotonically as you pay more, so an optimizer pointed at it converges on paying
 full price, having correctly maximized the metric it was given.
 
+## Statewide scope
+
+`ACQ_ALLOWED_COUNTIES` is empty by default — all 67 counties. Two things change with
+scope, and both are handled in code rather than by narrowing the filter:
+
+**Regional cost bands** (`regions.ts`). A flat repair rate is not defensible statewide:
+Miami-Dade and Monroe run materially hotter than the Panhandle on labour, permitting and
+insurance. Counties map to four bands (PREMIUM 1.35x / METRO 1.10x / STANDARD 1.00x /
+RURAL 0.85x) multiplying the base per-sqft rate. The ranking is stable; the magnitudes
+are placeholders to calibrate.
+
+Note the interaction: a listing that pencils in Tampa can correctly REJECT in Miami-Dade,
+because higher rehab costs push the offer under `MIN_OFFER_RATIO_OF_LIST`. That is the
+bands working.
+
+**Send priority** (`priority.ts`). Statewide, far more listings qualify than the daily
+cap allows, so the cap becomes binding and order becomes strategy. Every evaluation
+carries a 0-100 `priority` blending confidence, offer-to-list proximity, days on market
+and deal size. Work the queue best-first — `acq_send_queue` in migration 0002 does this,
+and it also excludes suppressed agents, which matters more statewide since a feed will
+surface listings from agents who opted out in another county.
+
+**Flood exposure is a crude proxy right now.** `hasCoastalExposure()` holds ten counties
+(the Keys, the Ian corridor, the Big Bend) for review. Flood risk is a *property-level*
+attribute, so the correct implementation is a per-parcel FEMA National Flood Hazard Layer
+lookup — a free API. The county list is deliberately narrow until that exists, because
+flagging every coastal Florida county would hold half the state.
+
 ## Orchestration and persistence
 
 n8n runs the pipeline; see `n8n/README.md` for the two importable workflows and the

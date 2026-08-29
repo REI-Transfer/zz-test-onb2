@@ -10,6 +10,7 @@
  */
 
 import acquisitionConfig from "./config"
+import { costMultiplierForCounty, tierForCounty } from "./regions"
 import type { ConditionTier, Listing, RepairEstimate } from "./types"
 
 const perSqftFor = (tier: ConditionTier): number => {
@@ -32,13 +33,18 @@ export function estimateRepairs({ listing, tier, roofEndOfLife }: RepairInput): 
   const sqftKnown = Boolean(listing.livingArea && listing.livingArea > 0)
   const sqft = sqftKnown ? listing.livingArea! : acquisitionConfig.fallbackLivingArea
 
-  const perSqft = perSqftFor(tier)
+  // Regional cost band. A flat statewide rate overpays in cheap markets and quietly
+  // rejects good deals in expensive ones. See regions.ts.
+  const marketTier = tierForCounty(listing.address.county)
+  const costMultiplier = costMultiplierForCounty(listing.address.county)
+  const perSqft = perSqftFor(tier) * costMultiplier
+
   const lineItems: Record<string, number> = {
     baseRehab: Math.round(perSqft * sqft),
   }
 
   if (roofEndOfLife) {
-    lineItems.roof = Math.round(acquisitionConfig.repairRoofPerSqft * sqft)
+    lineItems.roof = Math.round(acquisitionConfig.repairRoofPerSqft * costMultiplier * sqft)
   }
 
   // HVAC is assumed shot on any heavy/severe rehab, and on a moderate rehab of a
@@ -46,7 +52,7 @@ export function estimateRepairs({ listing, tier, roofEndOfLife }: RepairInput): 
   const age = listing.yearBuilt ? new Date().getFullYear() - listing.yearBuilt : 0
   const hvacLikelyDead = tier === "HEAVY" || tier === "SEVERE" || (tier === "MODERATE" && age >= 20)
   if (hvacLikelyDead) {
-    lineItems.hvac = acquisitionConfig.repairHvacFlat
+    lineItems.hvac = Math.round(acquisitionConfig.repairHvacFlat * costMultiplier)
   }
 
   const subtotal = Object.values(lineItems).reduce((s, n) => s + n, 0)
@@ -54,5 +60,5 @@ export function estimateRepairs({ listing, tier, roofEndOfLife }: RepairInput): 
 
   const total = Object.values(lineItems).reduce((s, n) => s + n, 0)
 
-  return { total, perSqft, tier, lineItems, sqftKnown }
+  return { total, perSqft, tier, marketTier, costMultiplier, lineItems, sqftKnown }
 }

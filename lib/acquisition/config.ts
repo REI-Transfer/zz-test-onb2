@@ -37,8 +37,12 @@ const acquisitionConfig = {
   minListPrice: num(process.env.MIN_LIST_PRICE, 80_000),
   /** Condition score at or above this is "dated enough" to pursue. */
   minConditionScore: num(process.env.MIN_CONDITION_SCORE, 45),
-  /** Comma-separated RESO CountyOrParish values to include. Empty = no county gate. */
-  allowedCounties: process.env.ACQ_ALLOWED_COUNTIES ?? "Hillsborough,Pinellas",
+  /**
+   * Comma-separated RESO CountyOrParish values to include. Empty (the default) means
+   * no county gate — statewide. Narrow it to pilot a region; regional cost differences
+   * are handled by regions.ts, not by this filter.
+   */
+  allowedCounties: process.env.ACQ_ALLOWED_COUNTIES ?? "",
   /** Comma-separated ZIPs to exclude (flood-prone, HOA-heavy, whatever you avoid). */
   excludedZips: process.env.ACQ_EXCLUDED_ZIPS ?? "",
 
