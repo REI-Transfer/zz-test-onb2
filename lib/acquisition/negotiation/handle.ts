@@ -11,6 +11,7 @@ import acquisitionConfig from "../config"
 import type { Listing } from "../types"
 import { checkMandatoryKeywords, helpResponse, type Channel } from "./channel"
 import { classifyReply, type Classification } from "./classify"
+import { assessUrgency, type EscalationSignal } from "./escalation"
 import { decideAction, maxAllowableOffer, validateOutboundOffer } from "./policy"
 import { draftReply, type Draft } from "./respond"
 import type { NegotiationAction, NegotiationMessage, NegotiationState } from "./types"
@@ -22,6 +23,11 @@ export type HandleResult = {
   nextState: NegotiationState
   /** Populated whenever a human needs to look at this thread. */
   escalation?: string
+  /**
+   * How fast a person needs to touch this, and why. CALL_NOW means the gap is
+   * bridgeable by phone right now and another email is the wrong move.
+   */
+  urgency: EscalationSignal
 }
 
 /** Terminal transitions that must not be reopened by a later message. */
@@ -57,6 +63,7 @@ export async function handleInboundReply(input: {
       classification: { intent: "NOT_INTERESTED_STOP", newFacts: [], containsInstructionLikeText: false, confidence: 1 },
       action: { kind: "SUPPRESS", reason },
       draft: null,
+      urgency: { urgency: "NONE", headline: `Suppressed ${state.listingId}; no action needed.`, gapPct: null, gapDollars: null },
       nextState: {
         ...state,
         stage: "DEAD",
@@ -75,6 +82,7 @@ export async function handleInboundReply(input: {
       classification: { intent: "QUESTION", newFacts: [], containsInstructionLikeText: false, confidence: 1 },
       action: { kind: "ANSWER_ONLY", rationale: "HELP keyword; returned the fixed disclosure." },
       draft: { body, channel },
+      urgency: { urgency: "NONE", headline: `HELP keyword on ${state.listingId}; auto-answered.`, gapPct: null, gapDollars: null },
       nextState: {
         ...state,
         messages: [
@@ -88,6 +96,16 @@ export async function handleInboundReply(input: {
   }
 
   const classification = await classifyReply(inboundBody)
+
+  // How fast a person needs this, computed independently of what the policy decides to
+  // send. A thread can be both auto-answerable AND worth a phone call — the ladder
+  // conceding does not mean nobody should be dialling.
+  const urgency = assessUrgency({
+    state,
+    intent: classification.intent,
+    theirCounter: classification.counterPrice,
+    agent: listing.listAgent,
+  })
 
   const inboundMessage: NegotiationMessage = {
     direction: "inbound",
@@ -115,6 +133,7 @@ export async function handleInboundReply(input: {
       draft: null,
       nextState: { ...withInbound, stage: "ESCALATED", escalationReason: reason },
       escalation: reason,
+      urgency,
     }
   }
 
@@ -133,6 +152,7 @@ export async function handleInboundReply(input: {
       draft: null,
       nextState: { ...withInbound, stage: "ACCEPTED_PENDING_HUMAN", escalationReason: action.reason },
       escalation: action.reason,
+      urgency,
     }
   }
 
@@ -144,11 +164,12 @@ export async function handleInboundReply(input: {
       draft: null,
       nextState: { ...withInbound, stage: stageFor(action, withInbound.stage), escalationReason: reason },
       escalation: reason,
+      urgency,
     }
   }
 
   if (action.kind === "IGNORE") {
-    return { classification, action, draft: null, nextState: withInbound }
+    return { classification, action, draft: null, nextState: withInbound, urgency }
   }
 
   // Last gate before a number can leave the building. Runs independently of the model
@@ -164,6 +185,7 @@ export async function handleInboundReply(input: {
         draft: null,
         nextState: { ...withInbound, stage: "ESCALATED", escalationReason: reason },
         escalation: reason,
+        urgency,
       }
     }
   }
@@ -178,6 +200,7 @@ export async function handleInboundReply(input: {
       draft: null,
       nextState: { ...withInbound, stage: "ESCALATED", escalationReason: reason },
       escalation: reason,
+      urgency,
     }
   }
 
@@ -187,6 +210,7 @@ export async function handleInboundReply(input: {
     classification,
     action,
     draft,
+    urgency,
     nextState: {
       ...withInbound,
       stage: stageFor(action, withInbound.stage),

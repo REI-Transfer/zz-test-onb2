@@ -85,6 +85,29 @@ const acquisitionConfig = {
    */
   negotiationConcessionSteps: process.env.NEGOTIATION_CONCESSION_STEPS ?? "0.4,0.3,0.2",
 
+  // --- Outreach sequence ---
+  /** Master switch for follow-ups. Off means one LOI and silence. */
+  outreachSequenceEnabled: process.env.OUTREACH_SEQUENCE_ENABLED === "true",
+  /**
+   * Minimum list-price cut that re-engages a dormant thread, as a fraction. A $2,000
+   * trim on a $400,000 house is not a change of heart; 3% is.
+   */
+  priceCutMinPct: num(process.env.PRICE_CUT_MIN_PCT, 0.03),
+
+  // --- Call triggers ---
+  /**
+   * A counter within this fraction ABOVE the authority ceiling is treated as bridgeable
+   * by a phone call, and fires a CALL_NOW notification. Default 10%: on a $205k ceiling
+   * that is any counter up to about $225k.
+   *
+   * This is the single highest-leverage number in the file. Too tight and the team
+   * never gets called in on deals a five-minute conversation would have closed; too
+   * loose and they get paged for counters the ladder would have handled on its own.
+   */
+  callTriggerBandPct: num(process.env.CALL_TRIGGER_BAND_PCT, 0.10),
+  /** Above the call band but inside this fraction gets a same-day human look. */
+  reviewTriggerBandPct: num(process.env.REVIEW_TRIGGER_BAND_PCT, 0.25),
+
   // --- LOI content ---
   buyerEntity:      process.env.LOI_BUYER_ENTITY      ?? "",
   buyerSignerName:  process.env.LOI_SIGNER_NAME       ?? "",
