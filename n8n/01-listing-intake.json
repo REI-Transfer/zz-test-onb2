@@ -1,0 +1,205 @@
+{
+  "name": "Acquisition — Listing Intake (Stellar MLS)",
+  "nodes": [
+    {
+      "parameters": { "rule": { "interval": [{ "field": "minutes", "minutesInterval": 30 }] } },
+      "id": "sched",
+      "name": "Every 30 Minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [-880, 300],
+      "notes": "Poll cadence, not send cadence. The daily cap in the API is what limits mail volume."
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.STELLAR_RESO_BASE }}/Property",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "$filter", "value": "=StandardStatus eq 'Active' and ModificationTimestamp gt {{ $now.minus(35, 'minutes').toISO() }} and (PropertySubType eq 'SingleFamilyResidence' or PropertyType eq 'ResidentialIncome')" },
+            { "name": "$select", "value": "ListingKey,ListingId,PropertySubType,ListPrice,LivingArea,LotSizeSquareFeet,YearBuilt,BedroomsTotal,BathroomsTotalInteger,StreetName,StreetNumber,City,CountyOrParish,StateOrProvince,PostalCode,PublicRemarks,PrivateRemarks,DaysOnMarket,ListAgentFullName,ListAgentEmail,ListAgentPreferredPhone,ListAgentMlsId,ListOfficeName,StandardStatus,ModificationTimestamp" },
+            { "name": "$expand", "value": "Media" },
+            { "name": "$top", "value": "200" }
+          ]
+        },
+        "options": { "timeout": 60000 }
+      },
+      "id": "mls",
+      "name": "Fetch Modified Listings",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-660, 300],
+      "notes": "RESO Web API. The 35-minute lookback deliberately overlaps the 30-minute schedule — duplicates are cheap (listing_key is a primary key), missed listings are not."
+    },
+    {
+      "parameters": {
+        "jsCode": "// Normalize RESO fields into the Listing shape in lib/acquisition/types.ts.\n// This is the ONLY place that knows the feed's field names; swap the feed by\n// rewriting this node alone.\nconst SUBTYPE = {\n  SingleFamilyResidence: 'single-family',\n  Duplex: 'duplex',\n  Triplex: 'triplex',\n  Quadruplex: 'quadplex',\n};\n\nreturn ($input.first().json.value || [])\n  .map((p) => {\n    const kind = SUBTYPE[p.PropertySubType];\n    if (!kind) return null; // 5+ units and everything else drops here\n    return {\n      json: {\n        listingKey: String(p.ListingKey),\n        listingId: String(p.ListingId),\n        kind,\n        listPrice: p.ListPrice,\n        livingArea: p.LivingArea || undefined,\n        lotSizeSqft: p.LotSizeSquareFeet || undefined,\n        yearBuilt: p.YearBuilt || undefined,\n        bedrooms: p.BedroomsTotal || undefined,\n        bathrooms: p.BathroomsTotalInteger || undefined,\n        address: {\n          street: [p.StreetNumber, p.StreetName].filter(Boolean).join(' '),\n          city: p.City,\n          county: p.CountyOrParish,\n          state: p.StateOrProvince,\n          postalCode: p.PostalCode,\n        },\n        publicRemarks: p.PublicRemarks || '',\n        privateRemarks: p.PrivateRemarks || undefined,\n        daysOnMarket: p.DaysOnMarket || undefined,\n        photos: (p.Media || [])\n          .filter((m) => m.MediaURL)\n          .sort((a, b) => (a.Order ?? 0) - (b.Order ?? 0))\n          .slice(0, 12)\n          .map((m) => m.MediaURL),\n        listAgent: {\n          fullName: p.ListAgentFullName || 'Listing Agent',\n          email: p.ListAgentEmail || undefined,\n          phone: p.ListAgentPreferredPhone || undefined,\n          mlsId: p.ListAgentMlsId || undefined,\n          brokerageName: p.ListOfficeName || undefined,\n        },\n        standardStatus: p.StandardStatus,\n        modificationTimestamp: p.ModificationTimestamp,\n      },\n    };\n  })\n  .filter(Boolean);"
+      },
+      "id": "normalize",
+      "name": "Normalize To Listing Shape",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-440, 300]
+    },
+    {
+      "parameters": { "batchSize": 1, "options": {} },
+      "id": "batch",
+      "name": "One At A Time",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [-220, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.DEALMACHINE_BASE }}/property/lookup",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ address: $json.address.street, city: $json.address.city, state: $json.address.state, zip: $json.address.postalCode }) }}",
+        "options": { "timeout": 30000 }
+      },
+      "id": "dealmachine",
+      "name": "DealMachine Enrichment",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [0, 300],
+      "onError": "continueRegularOutput",
+      "notes": "Continues on error: missing enrichment costs confidence points, it does not drop the listing. Map their response into { ownership, arv } in the next node."
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select sent_today from acq_sends_today;"
+      },
+      "id": "sent-today",
+      "name": "Sends Used Today",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [220, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.ACQ_BASE_URL }}/api/acquisition/evaluate",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ listing: $('One At A Time').item.json, arv: $('DealMachine Enrichment').item.json.arv, ownership: $('DealMachine Enrichment').item.json.ownership, sentToday: $json.sent_today }) }}",
+        "options": { "timeout": 60000 }
+      },
+      "id": "evaluate",
+      "name": "POST /api/acquisition/evaluate",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [440, 300]
+    },
+    {
+      "parameters": { "operation": "create", "tableId": "acq_predictions", "dataToSend": "autoMapInputData" },
+      "id": "log-prediction",
+      "name": "Log Prediction",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [660, 300],
+      "notes": "EVERY evaluation, including REJECTs. This table is the entire feedback loop — a prediction you didn't log can never be calibrated."
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": { "version": 2 },
+                "conditions": [{ "leftValue": "={{ $json.decision }}", "rightValue": "SEND", "operator": { "type": "string", "operation": "equals" } }],
+                "combinator": "and"
+              },
+              "outputKey": "send"
+            },
+            {
+              "conditions": {
+                "options": { "version": 2 },
+                "conditions": [{ "leftValue": "={{ $json.decision }}", "rightValue": "REVIEW", "operator": { "type": "string", "operation": "equals" } }],
+                "combinator": "and"
+              },
+              "outputKey": "review"
+            }
+          ]
+        },
+        "options": { "fallbackOutput": "extra" }
+      },
+      "id": "route",
+      "name": "Route By Decision",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [880, 300]
+    },
+    {
+      "parameters": { "operation": "create", "tableId": "acq_threads", "dataToSend": "autoMapInputData" },
+      "id": "open-thread",
+      "name": "Open Negotiation Thread",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1100, 180],
+      "notes": "stage OPENED, opening_offer = current_offer = offer.offerPrice, economics frozen from the evaluation."
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "sendTo": "={{ $('POST /api/acquisition/evaluate').item.json.loi.toEmail }}",
+        "subject": "={{ $('POST /api/acquisition/evaluate').item.json.loi.subject }}",
+        "emailType": "text",
+        "message": "={{ $('POST /api/acquisition/evaluate').item.json.loi.body }}",
+        "options": {}
+      },
+      "id": "send-loi",
+      "name": "Send LOI",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1320, 180]
+    },
+    {
+      "parameters": { "operation": "create", "tableId": "acq_sends", "dataToSend": "autoMapInputData" },
+      "id": "log-send",
+      "name": "Log Send",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1540, 180]
+    },
+    {
+      "parameters": { "operation": "create", "tableId": "acq_threads", "dataToSend": "autoMapInputData" },
+      "id": "queue-review",
+      "name": "Queue For Review",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1100, 380],
+      "notes": "Held, not discarded. Work this queue — REVIEW is where the deals a human would take often live."
+    }
+  ],
+  "connections": {
+    "Every 30 Minutes": { "main": [[{ "node": "Fetch Modified Listings", "type": "main", "index": 0 }]] },
+    "Fetch Modified Listings": { "main": [[{ "node": "Normalize To Listing Shape", "type": "main", "index": 0 }]] },
+    "Normalize To Listing Shape": { "main": [[{ "node": "One At A Time", "type": "main", "index": 0 }]] },
+    "One At A Time": { "main": [[], [{ "node": "DealMachine Enrichment", "type": "main", "index": 0 }]] },
+    "DealMachine Enrichment": { "main": [[{ "node": "Sends Used Today", "type": "main", "index": 0 }]] },
+    "Sends Used Today": { "main": [[{ "node": "POST /api/acquisition/evaluate", "type": "main", "index": 0 }]] },
+    "POST /api/acquisition/evaluate": { "main": [[{ "node": "Log Prediction", "type": "main", "index": 0 }]] },
+    "Log Prediction": { "main": [[{ "node": "Route By Decision", "type": "main", "index": 0 }]] },
+    "Route By Decision": {
+      "main": [
+        [{ "node": "Open Negotiation Thread", "type": "main", "index": 0 }],
+        [{ "node": "Queue For Review", "type": "main", "index": 0 }],
+        [{ "node": "One At A Time", "type": "main", "index": 0 }]
+      ]
+    },
+    "Open Negotiation Thread": { "main": [[{ "node": "Send LOI", "type": "main", "index": 0 }]] },
+    "Send LOI": { "main": [[{ "node": "Log Send", "type": "main", "index": 0 }]] },
+    "Log Send": { "main": [[{ "node": "One At A Time", "type": "main", "index": 0 }]] },
+    "Queue For Review": { "main": [[{ "node": "One At A Time", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

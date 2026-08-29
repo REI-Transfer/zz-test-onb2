@@ -20,6 +20,7 @@ export const dynamic = "force-dynamic"
 
 const MessageSchema = z.object({
   direction: z.enum(["outbound", "inbound"]),
+  channel: z.enum(["email", "sms"]).default("email"),
   at: z.string(),
   subject: z.string().optional(),
   body: z.string(),
@@ -71,6 +72,7 @@ const RequestSchema = z.object({
   listing: ListingSchema,
   inboundBody: z.string().min(1),
   receivedAt: z.string().optional(),
+  channel: z.enum(["email", "sms"]).default("email"),
 })
 
 export async function POST(request: Request) {
@@ -95,6 +97,7 @@ export async function POST(request: Request) {
       listing: parsed.data.listing as Listing,
       inboundBody: parsed.data.inboundBody,
       receivedAt: parsed.data.receivedAt,
+      channel: parsed.data.channel,
     })
     return NextResponse.json(result)
   } catch (error) {

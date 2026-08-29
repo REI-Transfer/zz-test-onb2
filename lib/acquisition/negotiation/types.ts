@@ -34,6 +34,8 @@ export type ReplyIntent =
 /** One outbound or inbound message in the thread. */
 export type NegotiationMessage = {
   direction: "outbound" | "inbound"
+  /** Threads can be mixed — an emailed LOI answered by text is common. */
+  channel: "email" | "sms"
   at: string
   subject?: string
   body: string

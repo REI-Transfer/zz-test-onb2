@@ -1,0 +1,299 @@
+{
+  "name": "Acquisition — Reply Handler (email + SMS)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "acq-reply",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "wh-inbound",
+      "name": "Inbound Reply Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-720, 300],
+      "notes": "Normalize BEFORE this node. Gmail Pub/Sub push and the Twilio inbound webhook have different shapes; both must arrive here as { channel, from, body, listingKey, receivedAt }."
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "acq_suppressions",
+        "returnAll": false,
+        "limit": 1,
+        "filters": {
+          "conditions": [
+            { "keyName": "contact", "condition": "eq", "keyValue": "={{ $json.body.from.toLowerCase() }}" }
+          ]
+        }
+      },
+      "id": "sb-suppression",
+      "name": "Check Suppression List",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [-500, 300],
+      "alwaysOutputData": true,
+      "notes": "Always runs first. An opt-out must be honoured before anything else happens, including before we spend a token classifying the message."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false, "version": 2 },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.contact }}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "notExists", "singleValue": true }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "if-not-suppressed",
+      "name": "Not Suppressed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [-280, 300]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "acq_threads",
+        "filters": {
+          "conditions": [
+            { "keyName": "listing_key", "condition": "eq", "keyValue": "={{ $('Inbound Reply Webhook').item.json.body.listingKey }}" }
+          ]
+        }
+      },
+      "id": "sb-thread",
+      "name": "Load Thread State",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [-60, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Reshape the DB row into the NegotiationState the API expects.\nconst row = $input.first().json;\nconst inbound = $('Inbound Reply Webhook').first().json.body;\n\nreturn [{\n  json: {\n    channel: inbound.channel,\n    inboundBody: inbound.body,\n    receivedAt: inbound.receivedAt || new Date().toISOString(),\n    state: {\n      listingKey: row.listing_key,\n      listingId: row.listing_id,\n      stage: row.stage,\n      openingOffer: row.opening_offer,\n      currentOffer: row.current_offer,\n      theirLastCounter: row.their_last_counter ?? undefined,\n      concessionsUsed: row.concessions_used,\n      economics: row.economics,\n      messages: row.messages ?? [],\n      escalationReason: row.escalation_reason ?? undefined,\n      updatedAt: row.updated_at,\n    },\n    listing: row.listing_snapshot,\n  }\n}];"
+      },
+      "id": "code-shape",
+      "name": "Build Request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [160, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.ACQ_BASE_URL }}/api/acquisition/reply",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": { "timeout": 60000 }
+      },
+      "id": "http-reply",
+      "name": "POST /api/acquisition/reply",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [380, 200],
+      "notes": "Header auth credential supplies: Authorization: Bearer <ACQ_API_SECRET>. Classifies, applies the concession policy, and returns a draft — it does NOT send."
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": { "version": 2 },
+                "conditions": [
+                  { "leftValue": "={{ $json.escalation }}", "rightValue": "", "operator": { "type": "string", "operation": "exists", "singleValue": true } }
+                ],
+                "combinator": "and"
+              },
+              "outputKey": "escalate"
+            },
+            {
+              "conditions": {
+                "options": { "version": 2 },
+                "conditions": [
+                  { "leftValue": "={{ $json.draft }}", "rightValue": "", "operator": { "type": "object", "operation": "exists", "singleValue": true } }
+                ],
+                "combinator": "and"
+              },
+              "outputKey": "send"
+            }
+          ]
+        },
+        "options": { "fallbackOutput": "extra" }
+      },
+      "id": "switch-outcome",
+      "name": "Escalate / Send / Ignore",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [600, 200],
+      "notes": "Escalation is checked FIRST. Any escalation means a human looks before anything goes out, even if a draft was also produced."
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": { "version": 2 },
+                "conditions": [
+                  { "leftValue": "={{ $json.draft.channel }}", "rightValue": "sms", "operator": { "type": "string", "operation": "equals" } }
+                ],
+                "combinator": "and"
+              },
+              "outputKey": "sms"
+            }
+          ]
+        },
+        "options": { "fallbackOutput": "extra" }
+      },
+      "id": "switch-channel",
+      "name": "SMS or Email?",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [820, 320]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "to": "={{ $('Inbound Reply Webhook').item.json.body.from }}",
+        "subject": "={{ $json.draft.subject }}",
+        "emailType": "text",
+        "message": "={{ $json.draft.body }}",
+        "options": {}
+      },
+      "id": "gmail-send",
+      "name": "Send Email (Gmail)",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1040, 400],
+      "notes": "Send from your real Workspace address on your real domain. Threading keeps the conversation intact for the agent."
+    },
+    {
+      "parameters": {
+        "resource": "sms",
+        "operation": "send",
+        "to": "={{ $('Inbound Reply Webhook').item.json.body.from }}",
+        "message": "={{ $json.draft.body }}",
+        "options": {}
+      },
+      "id": "twilio-send",
+      "name": "Send SMS (Twilio)",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [1040, 240],
+      "notes": "Only ever replies to a thread the agent started. See n8n/README.md — outbound-initiated automated SMS is a different legal posture entirely."
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "acq_threads",
+        "filters": {
+          "conditions": [
+            { "keyName": "listing_key", "condition": "eq", "keyValue": "={{ $('Build Request').item.json.state.listingKey }}" }
+          ]
+        },
+        "dataToSend": "autoMapInputData"
+      },
+      "id": "sb-persist",
+      "name": "Persist Thread State",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1260, 320],
+      "notes": "nextState from the API response. Without this the thread has no memory and every reply looks like the first."
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "tableId": "acq_sends",
+        "dataToSend": "autoMapInputData"
+      },
+      "id": "sb-log-send",
+      "name": "Log Send",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1480, 320]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "acq_threads",
+        "filters": {
+          "conditions": [
+            { "keyName": "listing_key", "condition": "eq", "keyValue": "={{ $('Build Request').item.json.state.listingKey }}" }
+          ]
+        },
+        "dataToSend": "autoMapInputData"
+      },
+      "id": "sb-persist-escalated",
+      "name": "Persist Escalated State",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [820, 60]
+    },
+    {
+      "parameters": {
+        "content": "=**{{ $json.classification.intent }}** on {{ $('Build Request').item.json.state.listingId }}\n\n{{ $json.escalation }}\n\nStanding offer: ${{ $('Build Request').item.json.state.currentOffer }}\nTheir counter: {{ $json.classification.counterPrice || 'none' }}\n\n> {{ $('Inbound Reply Webhook').item.json.body.body }}",
+        "options": {}
+      },
+      "id": "notify",
+      "name": "Notify Human",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [1040, 60],
+      "notes": "Swap for email/GHL if you don't use Slack. The point is that an escalation reaches a person the same day, not that it reaches Slack."
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "tableId": "acq_suppressions",
+        "dataToSend": "defineBelow",
+        "fieldsUi": {
+          "fieldValues": [
+            { "fieldId": "contact", "fieldValue": "={{ $('Inbound Reply Webhook').item.json.body.from.toLowerCase() }}" },
+            { "fieldId": "channel", "fieldValue": "={{ $('Inbound Reply Webhook').item.json.body.channel }}" },
+            { "fieldId": "reason", "fieldValue": "={{ $json.action.reason }}" }
+          ]
+        }
+      },
+      "id": "sb-suppress",
+      "name": "Add To Suppression List",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [820, -100],
+      "notes": "Fed by action.kind === SUPPRESS. Wire the escalate branch's SUPPRESS case here."
+    }
+  ],
+  "connections": {
+    "Inbound Reply Webhook": { "main": [[{ "node": "Check Suppression List", "type": "main", "index": 0 }]] },
+    "Check Suppression List": { "main": [[{ "node": "Not Suppressed?", "type": "main", "index": 0 }]] },
+    "Not Suppressed?": { "main": [[{ "node": "Load Thread State", "type": "main", "index": 0 }], []] },
+    "Load Thread State": { "main": [[{ "node": "Build Request", "type": "main", "index": 0 }]] },
+    "Build Request": { "main": [[{ "node": "POST /api/acquisition/reply", "type": "main", "index": 0 }]] },
+    "POST /api/acquisition/reply": { "main": [[{ "node": "Escalate / Send / Ignore", "type": "main", "index": 0 }]] },
+    "Escalate / Send / Ignore": {
+      "main": [
+        [{ "node": "Persist Escalated State", "type": "main", "index": 0 }],
+        [{ "node": "SMS or Email?", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "Persist Escalated State": { "main": [[{ "node": "Notify Human", "type": "main", "index": 0 }]] },
+    "SMS or Email?": {
+      "main": [
+        [{ "node": "Send SMS (Twilio)", "type": "main", "index": 0 }],
+        [{ "node": "Send Email (Gmail)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Send SMS (Twilio)": { "main": [[{ "node": "Persist Thread State", "type": "main", "index": 0 }]] },
+    "Send Email (Gmail)": { "main": [[{ "node": "Persist Thread State", "type": "main", "index": 0 }]] },
+    "Persist Thread State": { "main": [[{ "node": "Log Send", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

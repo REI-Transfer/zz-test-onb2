@@ -136,6 +136,18 @@ sample size. **`OFFER_ARV_MULTIPLIER` has no proposal path at all** — acceptan
 rises monotonically as you pay more, so an optimizer pointed at it converges on paying
 full price, having correctly maximized the metric it was given.
 
+## Orchestration and persistence
+
+n8n runs the pipeline; see `n8n/README.md` for the two importable workflows and the
+what-lives-where split. The short version: n8n owns scheduling, delivery, retries and
+persistence; this module owns every decision that costs money if it is wrong.
+
+**State lives in Supabase** — `supabase/migrations/0001_acquisition_pipeline.sql`. The
+endpoints are stateless by design, so without those tables n8n has no memory between
+runs and every reply reads as the first message in its thread. The schema also carries
+the suppression list (checked before any send), the send ledger (backs the daily cap),
+and the prediction/outcome ledger the calibration loop reads.
+
 ## Adding an MLS source
 
 `types.ts` defines the normalized `Listing` shape, aligned to the RESO Data Dictionary so

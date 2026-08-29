@@ -7,7 +7,9 @@
  * threading stay in the mail layer so a run can be inspected and replayed.
  */
 
+import acquisitionConfig from "../config"
 import type { Listing } from "../types"
+import { checkMandatoryKeywords, helpResponse, type Channel } from "./channel"
 import { classifyReply, type Classification } from "./classify"
 import { decideAction, maxAllowableOffer, validateOutboundOffer } from "./policy"
 import { draftReply, type Draft } from "./respond"
@@ -37,14 +39,59 @@ export async function handleInboundReply(input: {
   listing: Listing
   inboundBody: string
   receivedAt?: string
+  /** Defaults to email. SMS changes both the drafting voice and the length ceiling. */
+  channel?: Channel
 }): Promise<HandleResult> {
   const { state, listing, inboundBody } = input
+  const channel: Channel = input.channel ?? "email"
   const receivedAt = input.receivedAt ?? new Date().toISOString()
+
+  // MANDATORY KEYWORDS FIRST — before any model call, on every channel.
+  // Honouring an opt-out is a legal obligation with statutory damages attached, so it
+  // must not depend on a classifier being right. See channel.ts.
+  const keyword = checkMandatoryKeywords(inboundBody)
+
+  if (keyword.kind === "STOP") {
+    const reason = "Recipient sent a STOP/unsubscribe keyword; suppressed permanently."
+    return {
+      classification: { intent: "NOT_INTERESTED_STOP", newFacts: [], containsInstructionLikeText: false, confidence: 1 },
+      action: { kind: "SUPPRESS", reason },
+      draft: null,
+      nextState: {
+        ...state,
+        stage: "DEAD",
+        escalationReason: reason,
+        messages: [...state.messages, { direction: "inbound", channel, at: receivedAt, body: inboundBody }],
+        updatedAt: receivedAt,
+      },
+      escalation: reason,
+    }
+  }
+
+  if (keyword.kind === "HELP") {
+    // Fixed text, never model-generated — it must be stable and accurate.
+    const body = helpResponse(acquisitionConfig.buyerEntity || "Cash buyer", acquisitionConfig.buyerPhone)
+    return {
+      classification: { intent: "QUESTION", newFacts: [], containsInstructionLikeText: false, confidence: 1 },
+      action: { kind: "ANSWER_ONLY", rationale: "HELP keyword; returned the fixed disclosure." },
+      draft: { body, channel },
+      nextState: {
+        ...state,
+        messages: [
+          ...state.messages,
+          { direction: "inbound", channel, at: receivedAt, body: inboundBody },
+          { direction: "outbound", channel, at: new Date().toISOString(), body },
+        ],
+        updatedAt: receivedAt,
+      },
+    }
+  }
 
   const classification = await classifyReply(inboundBody)
 
   const inboundMessage: NegotiationMessage = {
     direction: "inbound",
+    channel,
     at: receivedAt,
     body: inboundBody,
     offerPrice: classification.counterPrice,
@@ -121,7 +168,7 @@ export async function handleInboundReply(input: {
     }
   }
 
-  const draft = await draftReply({ state: withInbound, action, listing, inboundBody })
+  const draft = await draftReply({ state: withInbound, action, listing, inboundBody, channel })
 
   if (!draft) {
     const reason = "Could not produce a valid reply draft; held for human review."
@@ -149,6 +196,7 @@ export async function handleInboundReply(input: {
         ...withInbound.messages,
         {
           direction: "outbound",
+          channel,
           at: new Date().toISOString(),
           subject: draft.subject,
           body: draft.body,

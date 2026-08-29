@@ -102,6 +102,35 @@ async function main() {
     decideAction({ state: base({ stage: "DEAD" }), intent: "COUNTER", theirCounter: 260_000 }).kind === "IGNORE",
   )
 
+  // --- Mandatory keyword handling (runs before any model call) ---
+  const { checkMandatoryKeywords, specFor } = await import("../lib/acquisition/negotiation/channel")
+
+  check("Bare STOP opts out", checkMandatoryKeywords("STOP").kind === "STOP")
+  check("Punctuated stop opts out", checkMandatoryKeywords("stop.").kind === "STOP")
+  check("Whitespace-padded STOP opts out", checkMandatoryKeywords("  Stop  ").kind === "STOP")
+  check("Two-word STOP ALL opts out", checkMandatoryKeywords("Stop All").kind === "STOP")
+  check("UNSUBSCRIBE opts out", checkMandatoryKeywords("unsubscribe").kind === "STOP")
+  check("OPT OUT opts out", checkMandatoryKeywords("opt out").kind === "STOP")
+  check("HELP returns the fixed disclosure", checkMandatoryKeywords("HELP").kind === "HELP")
+
+  // False positives here are the expensive direction: silently killing a live deal
+  // because an agent used the word "stop" in a sentence.
+  check(
+    "Ordinary sentence containing 'stop' does NOT opt out",
+    checkMandatoryKeywords("Sure, stop by the property tomorrow after 2pm").kind === "NONE",
+  )
+  check(
+    "Question containing 'help' does NOT trigger HELP",
+    checkMandatoryKeywords("Can you help me understand how you got to that number?").kind === "NONE",
+  )
+  check("Real counter is untouched", checkMandatoryKeywords("Seller wants $250,000").kind === "NONE")
+
+  const sms = specFor("sms")
+  const email = specFor("email")
+  check("SMS spec caps at 2 segments", sms.maxChars === 320)
+  check("SMS has no subject line", sms.hasSubject === false)
+  check("Email spec has a subject line", email.hasSubject === true)
+
   // --- Calibration math ---
   const n = requiredSampleForLift(0.05, 0.07)
   check("A/B sample size for 5%→7% is in the thousands", n > 1000 && n < 3000, `${n} per arm`)
