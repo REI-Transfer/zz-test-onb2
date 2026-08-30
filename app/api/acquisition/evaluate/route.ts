@@ -83,6 +83,12 @@ const RequestSchema = z.object({
   ownership: OwnershipSchema.optional(),
   submarketMedianPerSqft: z.number().positive().optional(),
   sentToday: z.number().int().nonnegative().optional(),
+  // Last list price we recorded for this listing (acq_sequences.last_known_list_price,
+  // or the previous poll). Omitting it costs the price-cut entry trigger: the endpoint
+  // has no memory, so a reduction it is not told about did not happen.
+  previousListPrice: z.number().positive().optional(),
+  // Non-terminal threads already open with this listing agent, for the per-agent cap.
+  activeThreadsForAgent: z.number().int().nonnegative().optional(),
 })
 
 export async function POST(request: Request) {

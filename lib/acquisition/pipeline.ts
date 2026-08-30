@@ -10,6 +10,7 @@ import { applyVisionResult, assessCondition } from "./condition"
 import acquisitionConfig from "./config"
 import { renderLoi } from "./loi"
 import { computeOffer } from "./offer"
+import { priceCutEntry, type PriceCutEntry } from "./outreach/sequence"
 import { priorityScore } from "./priority"
 import { estimateRepairs } from "./repairs"
 import type { ArvEstimate, EvaluationResult, Listing, OwnershipEnrichment } from "./types"
@@ -21,7 +22,7 @@ const ACTIONABLE_STATUSES = new Set(["Active", "Coming Soon", "ActiveUnderContra
 const csv = (s: string): string[] => s.split(",").map((v) => v.trim()).filter(Boolean)
 
 /** Hard, free filters. Returns a rejection reason, or null to continue. */
-function prefilter(listing: Listing): string | null {
+function prefilter(listing: Listing, priceCut: PriceCutEntry): string | null {
   if (!ACTIONABLE_STATUSES.has(listing.standardStatus)) {
     return `Status "${listing.standardStatus}" is not actionable.`
   }
@@ -30,6 +31,27 @@ function prefilter(listing: Listing): string | null {
   }
   if (listing.listPrice < acquisitionConfig.minListPrice) {
     return `List price $${listing.listPrice.toLocaleString()} below min $${acquisitionConfig.minListPrice.toLocaleString()}.`
+  }
+
+  // Age on market is a hard filter, not a ranking input. Nothing gated on it before —
+  // priority.ts used days on market only to ORDER the queue — so a listing that hit
+  // the MLS this morning could be mailed this afternoon, which is the one day of its
+  // life a below-list cash offer cannot land. It runs here, in the free filters,
+  // because rejecting a fresh listing before the paid vision pass is the difference
+  // between a filter and an expensive one.
+  //
+  // A qualifying price cut skips the floor: the seller has already told you the price
+  // was wrong, which is better evidence than the calendar was ever going to give you.
+  //
+  // Unknown days on market counts as day zero. "We do not know how long it has sat" is
+  // not evidence that it has sat, and the failure mode of assuming otherwise is mailing
+  // fresh inventory at volume — silently, and to the people whose opinion of the sender
+  // is the asset.
+  if (!priceCut.qualifies) {
+    const dom = listing.daysOnMarket ?? 0
+    if (dom < acquisitionConfig.minDaysOnMarket) {
+      return `Day ${dom} on market, below the ${acquisitionConfig.minDaysOnMarket}-day floor — the seller is still anchored on list price.`
+    }
   }
 
   const counties = csv(acquisitionConfig.allowedCounties)
@@ -79,6 +101,13 @@ export type EvaluateInput = {
   submarketMedianPerSqft?: number
   /** LOIs already auto-sent today, for the daily cap. */
   sentToday?: number
+  /**
+   * Last list price we recorded for this listing, from acq_sequences or the previous
+   * feed poll. A cut below it is an entry trigger — see priceCutEntry().
+   */
+  previousListPrice?: number
+  /** Non-terminal threads already open with this listing agent, for the per-agent cap. */
+  activeThreadsForAgent?: number
 }
 
 export async function evaluateListing({
@@ -87,8 +116,17 @@ export async function evaluateListing({
   ownership,
   submarketMedianPerSqft,
   sentToday,
+  previousListPrice,
+  activeThreadsForAgent,
 }: EvaluateInput): Promise<EvaluationResult> {
-  const blocked = prefilter(listing)
+  // Resolved before the prefilter because it can waive the days-on-market floor, and
+  // read again at the end because it also decides where the listing lands in the queue.
+  const priceCut = priceCutEntry({
+    currentListPrice: listing.listPrice,
+    previousListPrice,
+  })
+
+  const blocked = prefilter(listing, priceCut)
   if (blocked) return rejected(listing, blocked)
 
   let condition = assessCondition({ listing, submarketMedianPerSqft })
@@ -106,7 +144,7 @@ export async function evaluateListing({
   }
 
   const repairs = estimateRepairs({ listing, tier: condition.tier, roofEndOfLife })
-  const offer = computeOffer({ listing, condition, repairs, arv, ownership, sentToday })
+  const offer = computeOffer({ listing, condition, repairs, arv, ownership, sentToday, activeThreadsForAgent })
 
   return {
     listingKey: listing.listingKey,
@@ -116,7 +154,7 @@ export async function evaluateListing({
     repairs,
     offer,
     loi: offer.decision === "REJECT" ? null : renderLoi({ listing, offer, repairs, condition }),
-    priority: priorityScore({ listing, offer }),
+    priority: priorityScore({ listing, offer, priceCut }),
     evaluatedAt: new Date().toISOString(),
   }
 }

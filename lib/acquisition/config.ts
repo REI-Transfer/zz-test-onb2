@@ -35,6 +35,20 @@ const acquisitionConfig = {
   /** Ignore anything above this list price. */
   maxListPrice: num(process.env.MAX_LIST_PRICE, 750_000),
   minListPrice: num(process.env.MIN_LIST_PRICE, 80_000),
+  /**
+   * Days on market a listing must have accumulated before it is worth mailing.
+   *
+   * The entire thesis is DATED inventory. On day one the seller is still anchored on
+   * list price and their agent has just finished telling them they will get it, so a
+   * 75%-of-ARV cash offer arrives at the worst possible moment: it cannot be accepted,
+   * and it teaches that agent to file the sender under wholesaler spam before there
+   * was ever a deal to lose. Waiting costs nothing. The listing is not going anywhere,
+   * and every week it sits makes the same number more interesting.
+   *
+   * A qualifying price cut overrides this floor — see priceCutEntry() in
+   * outreach/sequence.ts. The cut is better evidence than elapsed time.
+   */
+  minDaysOnMarket: num(process.env.MIN_DAYS_ON_MARKET, 21),
   /** Condition score at or above this is "dated enough" to pursue. */
   minConditionScore: num(process.env.MIN_CONDITION_SCORE, 45),
   /**
@@ -57,6 +71,20 @@ const acquisitionConfig = {
   autoSendEnabled: process.env.AUTO_SEND_ENABLED === "true",
   /** Hard ceiling on automatic LOIs per calendar day. Protects sender reputation. */
   maxAutoSendsPerDay: num(process.env.MAX_AUTO_SENDS_PER_DAY, 25),
+  /**
+   * Concurrent non-terminal threads allowed per listing agent.
+   *
+   * The suppression list is keyed per agent email and it works, but it only catches
+   * agents who have already asked to be left alone — it is a record of damage already
+   * done. VOLUME was never capped. A busy Tampa listing agent holding eight dated
+   * listings would receive eight LOIs plus up to twenty-four follow-ups inside
+   * fourteen days. That is a complaint, not outreach, and in a market this size the
+   * cost lands on every listing that agent takes afterwards.
+   *
+   * Two live conversations is enough to prove you are worth replying to. The rest of
+   * that agent's inventory is not lost, it is queued for review behind the first two.
+   */
+  maxActiveThreadsPerAgent: num(process.env.MAX_ACTIVE_THREADS_PER_AGENT, 2),
   /**
    * Reject offers below this fraction of list price. An offer at 40% of list is not
    * a negotiation, it is a deliverability problem. Set 0 to disable.

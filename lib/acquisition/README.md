@@ -16,7 +16,8 @@ Stellar MLS RESO feed poll
 DealMachine enrichment
   (equity / liens, ARV comps)
   ↓
-  ├───────── POST /api/acquisition/evaluate ─────────→ prefilter (kind, price, county, ZIP)
+  ├───────── POST /api/acquisition/evaluate ─────────→ prefilter (kind, price, county, ZIP,
+  │                                                              days on market)
   │                                                     ↓
   │                                                    condition: remarks NLP  (condition.ts)
   │                                                     + photo vision         (vision.ts)
@@ -75,11 +76,23 @@ explicitly set to `"true"`.
   overstated; held rather than sent.
 - **Fail-closed auth.** `/api/acquisition/evaluate` refuses every request when
   `ACQ_API_SECRET` is unset, rather than running open.
+- **Fresh listings are rejected, not queued.** `MIN_DAYS_ON_MARKET` (default 21) drops
+  anything newer in the prefilter, before the paid vision pass. Day one is the one day
+  a below-list cash offer cannot land: the seller is still anchored on list price and
+  their agent has just finished telling them they will get it. Missing days on market
+  counts as day zero — not knowing how long it sat is not evidence that it sat.
+  A qualifying price cut waives the floor (see below).
+- **One agent, two threads.** `MAX_ACTIVE_THREADS_PER_AGENT` (default 2) holds a
+  listing for review when its agent already has that many live threads. Suppression
+  catches agents who have opted out; this is what stops you earning the opt-out. An
+  agent with eight dated listings would otherwise collect eight LOIs plus up to
+  twenty-four follow-ups inside fourteen days.
 
 ## Cost
 
 The vision pass is the only paid step. It runs on Claude Opus 5 at roughly 8 photos per
-listing, and only on listings whose text score is already within 20 points of the
+listing, and only on listings that cleared the free prefilter (including the
+`MIN_DAYS_ON_MARKET` floor) and whose text score is already within 20 points of the
 qualifying threshold — cheap filters run first precisely to keep this bill down. Lower
 `ACQ_VISION_MAX_PHOTOS` or point `ACQ_VISION_MODEL` at a smaller model if volume makes
 it material.
@@ -153,10 +166,24 @@ bands working.
 
 **Send priority** (`priority.ts`). Statewide, far more listings qualify than the daily
 cap allows, so the cap becomes binding and order becomes strategy. Every evaluation
-carries a 0-100 `priority` blending confidence, offer-to-list proximity, days on market
-and deal size. Work the queue best-first — `acq_send_queue` in migration 0002 does this,
-and it also excludes suppressed agents, which matters more statewide since a feed will
-surface listings from agents who opted out in another county.
+carries a 0-100 `priority` blending confidence (0.40), offer-to-list proximity (0.30),
+days on market (0.25, saturating at 90 days) and deal size (0.05). Work the queue
+best-first — `acq_send_queue` in migrations 0002 and 0004 does this, and it also
+excludes suppressed agents and agents already at their thread cap, both of which matter
+more statewide since a feed will surface listings from agents you are already working
+in another county.
+
+**A price cut before first contact scores 100 and goes to the front.** `T5_PRICE_CUT`
+was re-engagement only, which left the strongest signal in the system doing nothing for
+the listings it says the most about — a house that cut its price before anyone wrote to
+it got no boost at all, and under `MIN_DAYS_ON_MARKET` could not be mailed at all. A
+reduction is a public admission that the market disagreed with the seller, it arrives
+with expectations already lowered by someone other than you, and it is perishable:
+every other cash buyer watching the feed sees it the same day. Pass
+`previousListPrice` to `/evaluate` and `priceCutEntry()` (in `outreach/sequence.ts`)
+does the rest — it waives the days-on-market floor and jumps the queue. Ties break on
+`decided_at` ascending, so the earliest-detected cut still goes first. The endpoint has
+no memory: a reduction it is not told about did not happen.
 
 **Flood exposure is a crude proxy right now.** `hasCoastalExposure()` holds ten counties
 (the Keys, the Ian corridor, the Big Bend) for review. Flood risk is a *property-level*
@@ -170,7 +197,12 @@ n8n runs the pipeline; see `n8n/README.md` for the two importable workflows and 
 what-lives-where split. The short version: n8n owns scheduling, delivery, retries and
 persistence; this module owns every decision that costs money if it is wrong.
 
-**State lives in Supabase** — `supabase/migrations/0001_acquisition_pipeline.sql`. The
+**State lives in Supabase** — `supabase/migrations/0001_acquisition_pipeline.sql`,
+with `0002` (send queue), `0003` (sequence state, call alerts) and `0004` (per-agent
+cap) on top. `0004` adds `acq_predictions.agent_email`, which intake must now write:
+the queue could not previously see who was being mailed, so it could not cap anyone.
+Its cap literal is `2` and has to be kept in step with `MAX_ACTIVE_THREADS_PER_AGENT`
+by hand — SQL cannot read the app's env. The
 endpoints are stateless by design, so without those tables n8n has no memory between
 runs and every reply reads as the first message in its thread. The schema also carries
 the suppression list (checked before any send), the send ledger (backs the daily cap),

@@ -23,7 +23,7 @@ const check = (name: string, cond: boolean, detail = "") => {
 const daysAgo = (n: number) => new Date(Date.now() - n * 86_400_000).toISOString()
 
 async function main() {
-  const { nextTouch } = await import("../lib/acquisition/outreach/sequence")
+  const { assessPriceCut, nextTouch, priceCutEntry } = await import("../lib/acquisition/outreach/sequence")
   const { assessUrgency } = await import("../lib/acquisition/negotiation/escalation")
   const { render, SEQUENCE } = await import("../lib/acquisition/outreach/templates")
   type SequenceState = import("../lib/acquisition/outreach/sequence").SequenceState
@@ -69,6 +69,34 @@ async function main() {
 
   const cutAfterReply = nextTouch({ state: seq({ loiSentAt: daysAgo(30), repliedAt: daysAgo(20) }), currentListPrice: 250_000 })
   check("Price cut never overrides a reply", cutAfterReply.kind === "STOP")
+
+  console.log("\n── Price cut as an ENTRY trigger (never-mailed listings) ──")
+  // T5 was re-engagement only, so the best signal in the system did nothing for the
+  // listings it says the most about: a house that cuts before we ever wrote to it got
+  // no boost at all, and under MIN_DAYS_ON_MARKET could not be mailed at all.
+  const entry = priceCutEntry({ currentListPrice: 275_000, previousListPrice: 300_000 })
+  check("8% cut on a never-mailed listing enters", entry.qualifies, `→ ${entry.reason}`)
+
+  const trimEntry = priceCutEntry({ currentListPrice: 297_000, previousListPrice: 300_000 })
+  check("1% trim does not enter (below 3% floor)", !trimEntry.qualifies, `→ ${trimEntry.reason}`)
+
+  const firstSighting = priceCutEntry({ currentListPrice: 275_000 })
+  check("No prior price means no entry trigger", !firstSighting.qualifies, `→ ${firstSighting.reason}`)
+
+  const raised = priceCutEntry({ currentListPrice: 320_000, previousListPrice: 300_000 })
+  check("A price INCREASE never triggers entry", !raised.qualifies)
+
+  const alreadyMailed = priceCutEntry({ currentListPrice: 275_000, previousListPrice: 300_000, loiSent: true })
+  check("Once the LOI is out it is T5's job", !alreadyMailed.qualifies, `→ ${alreadyMailed.reason}`)
+
+  // One threshold, two doors. If these ever disagree, the same event means two
+  // different things depending on whether we happened to have mailed the agent.
+  const sameCut = assessPriceCut(300_000, 275_000)
+  check(
+    "Entry and re-engagement share one threshold",
+    sameCut.qualifies === entry.qualifies && Math.abs(sameCut.cutPct - entry.cutPct) < 1e-9,
+    `${(sameCut.cutPct * 100).toFixed(1)}%`,
+  )
 
   console.log("\n── Call-trigger bands (ceiling $205,000) ──")
   const negState = (over: Partial<NegotiationState> = {}): NegotiationState => ({

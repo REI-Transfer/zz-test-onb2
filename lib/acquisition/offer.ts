@@ -79,6 +79,28 @@ function scoreConfidence(
   return { confidence: Math.round(weighted * 100), breakdown }
 }
 
+/**
+ * Per-agent volume cap.
+ *
+ * The suppression list is keyed per agent email and it works, but it only catches
+ * agents who have already asked to be left alone — it is a record of damage already
+ * done. VOLUME was never capped anywhere. A busy Tampa listing agent holding eight
+ * dated listings would receive eight LOIs plus up to twenty-four follow-ups inside
+ * fourteen days, all from the same sender, none of them wrong on their own. That is a
+ * complaint, not outreach, and in a market this size it costs you every listing that
+ * agent takes afterwards.
+ *
+ * Counts NON-TERMINAL threads rather than lifetime sends: two live conversations is
+ * enough to show you are worth replying to, and a thread that died in March should not
+ * block a genuinely good listing from the same agent in September.
+ *
+ * Hitting the cap holds for review — it never rejects. The listing is fine; the timing
+ * is not, and the same deal is worth mailing once one of those threads closes out.
+ */
+export function agentAtVolumeCap(activeThreads: number): boolean {
+  return activeThreads >= acquisitionConfig.maxActiveThreadsPerAgent
+}
+
 export type OfferInput = {
   listing: Listing
   condition: ConditionAssessment
@@ -87,6 +109,8 @@ export type OfferInput = {
   ownership?: OwnershipEnrichment
   /** LOIs already auto-sent today. Enforces the daily reputation cap. */
   sentToday?: number
+  /** Non-terminal threads already open with this listing agent. Enforces the per-agent cap. */
+  activeThreadsForAgent?: number
 }
 
 export function computeOffer({
@@ -96,6 +120,7 @@ export function computeOffer({
   arv,
   ownership,
   sentToday = 0,
+  activeThreadsForAgent = 0,
 }: OfferInput): OfferResult {
   const reasons: string[] = []
   const { confidence, confidenceBreakdown } = (() => {
@@ -197,6 +222,12 @@ export function computeOffer({
   if (sentToday >= acquisitionConfig.maxAutoSendsPerDay) {
     hold(
       `Daily auto-send cap reached (${sentToday}/${acquisitionConfig.maxAutoSendsPerDay}); queued rather than sent.`,
+    )
+  }
+
+  if (agentAtVolumeCap(activeThreadsForAgent)) {
+    hold(
+      `Listing agent already has ${activeThreadsForAgent} active thread(s), at the cap of ${acquisitionConfig.maxActiveThreadsPerAgent}; queued rather than sent.`,
     )
   }
 

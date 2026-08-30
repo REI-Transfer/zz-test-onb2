@@ -15,11 +15,17 @@
  * the ledger exists to answer, and one of the few here with enough events to answer it.
  */
 
+import type { PriceCutEntry } from "./outreach/sequence"
 import type { Listing, OfferResult } from "./types"
 
 export type PriorityInput = {
   listing: Listing
   offer: OfferResult
+  /**
+   * Set when this listing arrived on a price cut before first contact.
+   * See priceCutEntry() in outreach/sequence.ts.
+   */
+  priceCut?: PriceCutEntry
 }
 
 /**
@@ -30,8 +36,17 @@ export type PriorityInput = {
  * is just ranking by ARV — it would send the whole day's mail to the most expensive
  * houses regardless of whether any of them would ever accept.
  */
-export function priorityScore({ listing, offer }: PriorityInput): number {
+export function priorityScore({ listing, offer, priceCut }: PriorityInput): number {
   if (offer.offerPrice === null) return 0
+
+  // A qualifying price cut is not a ranking input, it is a queue jump. Scoring it
+  // against confidence and deal size would let a marginally tidier ordinary listing
+  // outrank it, and that is the wrong trade at any weighting: the cut is the only
+  // input here that reports what the SELLER just did, and it is perishable — every
+  // other cash buyer watching the feed sees the same event on the same day.
+  // Ties among cut entries break on decided_at ascending in acq_send_queue, so the
+  // earliest-detected cut still goes first.
+  if (priceCut?.qualifies) return 100
 
   // Confidence in the underwriting. A high-confidence read is worth more of a scarce
   // send than a speculative one at the same nominal margin.
@@ -42,22 +57,33 @@ export function priorityScore({ listing, offer }: PriorityInput): number {
   const ratio = offer.offerPrice / listing.listPrice
   const proximityFactor = Math.max(0, Math.min(1, (ratio - 0.5) / 0.4))
 
-  // Time on market as a motivation proxy, saturating at 120 days — beyond that it
-  // stops telling you anything new about the seller.
+  // Time on market as a motivation proxy, saturating at 90 days — beyond that it stops
+  // telling you anything new about the seller.
+  //
+  // This used to weigh 0.15 and saturate at 120, which meant a 15-day listing and a
+  // 90-day listing came out about 9 points apart on a 100-point scale. That is noise,
+  // not a preference, and it is a strange thing to be indifferent about in a pipeline
+  // whose entire premise is that dated listings behave differently from fresh ones.
+  // 90 days is also where the signal flattens in practice: by then the seller has had
+  // the "it will move in spring" conversation and lost it.
   const dom = listing.daysOnMarket ?? 0
-  const motivationFactor = Math.min(1, dom / 120)
+  const motivationFactor = Math.min(1, dom / 90)
 
   // Deal size, log-scaled: a $400k ARV deal is worth more than a $200k one, but not
   // twice as much in practice, and linear scaling would starve the affordable end of
   // the market where these offers actually get taken.
+  //
+  // Held at a deliberately small weight. Of the four inputs it is the one least
+  // connected to whether an agent replies, so it is where the weight for days on
+  // market came from.
   const spread = offer.arv * 0.25
   const sizeFactor = Math.max(0, Math.min(1, Math.log10(Math.max(spread, 1) / 10_000) / Math.log10(20)))
 
   const weighted =
     confidenceFactor * 0.40 +
     proximityFactor * 0.30 +
-    motivationFactor * 0.15 +
-    sizeFactor * 0.15
+    motivationFactor * 0.25 +
+    sizeFactor * 0.05
 
   return Math.round(weighted * 100)
 }

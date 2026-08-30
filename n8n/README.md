@@ -60,10 +60,23 @@ Split it into two workflows:
 2. **Drain** — a separate schedule (say hourly) that reads
    `select * from acq_send_queue limit <remaining cap>`, opens the thread, sends, logs.
 
-The `acq_send_queue` view (migration 0002) handles best-first ordering, excludes
-already-sent listings, drops decisions older than 48 hours, and filters suppressed
-agents — that last one matters more statewide, since a statewide feed will surface
-listings from agents who opted out in a different county.
+The `acq_send_queue` view (migrations 0002 and 0004) handles best-first ordering,
+excludes already-sent listings, drops decisions older than 48 hours, filters suppressed
+agents, and drops agents already carrying `MAX_ACTIVE_THREADS_PER_AGENT` live threads.
+The last two matter more statewide, since a statewide feed will surface listings from
+agents you have opted out of, or are already working, in a different county.
+
+Two things intake and drain must do for that to work:
+
+- **Intake writes `acq_predictions.agent_email`.** Added in 0004. Without it the queue
+  cannot see who is being mailed and the per-agent cap silently passes everything.
+- **Intake sends `previousListPrice`** (from `acq_sequences.last_known_list_price`, or
+  the last poll) so `/evaluate` can spot a price cut before first contact. That waives
+  the `MIN_DAYS_ON_MARKET` floor and scores the listing 100. The endpoint is stateless:
+  a cut it is not told about did not happen.
+- **Drain opens each thread as it sends that row**, not all of them up front. The cap
+  counts threads that already exist, so a batch that opens nothing until the end can
+  still take two rows for the same agent.
 
 ## Before enabling SMS
 
