@@ -2,10 +2,31 @@
  * lib/acquisition/config.ts — Server-side env read point for the outreach pipeline.
  * Same convention as lib/config.ts: read env here, nowhere else. Server-only.
  *
- * CALIBRATION WARNING: every dollar figure below is a placeholder. Repair costs and
- * the offer multiplier are market- and operator-specific; the defaults are plausible
- * Tampa/St. Pete numbers, NOT researched ones. Set these from your own closed-deal
- * history before enabling auto-send, or the pipeline will confidently mail bad offers.
+ * ABOUT THE REPAIR NUMBERS (revised 2026-08-31)
+ *
+ * These were invented placeholders. They are now Florida investor-market rules of
+ * thumb, sourced below, and they are still not this operator's numbers.
+ *
+ * That is acceptable, and deliberately so. The LOI is an opening position in a
+ * negotiation, not an appraisal — it says so in the letter, states the repair budget it
+ * assumed, and invites correction in both directions. An agent who replies "the roof was
+ * done in 2023" is doing the underwriting for free, and that reply is the single
+ * highest-value message the system receives.
+ *
+ * One caveat that matters when reading the sources: retail remodelling quotes are not
+ * investor rehab costs. Consumer price guides sell finished kitchens to homeowners at
+ * $30-60/sqft for cosmetic work; investors doing rental-grade finishes with their own
+ * trades land far below that. The tiers here follow the INVESTOR figures (cosmetic
+ * $15-25K, moderate $30-70K, full gut $75-150K on a typical 1,500 sqft house), not the
+ * contractor guides, because the contractor guides are quoting a different job.
+ *
+ * Sources: realestateskills.com rehab-estimating guide and goliathdata.com tier
+ * breakdown for investor tiers; fixr / PITCH / Collis Roofing for Florida shingle at
+ * $5.50-7.50 per roof sqft installed; buildpriced / hvacprojectcost for Florida central
+ * air at $5.5-10.5K installed at the 14.3 SEER2 code minimum.
+ *
+ * Replace them with closed-job history when it exists. Until then they are defensible
+ * to a listing agent, which is the bar an opening offer has to clear.
  */
 
 const num = (v: string | undefined, fallback: number): number => {
@@ -18,16 +39,16 @@ const acquisitionConfig = {
   offerArvMultiplier: num(process.env.OFFER_ARV_MULTIPLIER, 0.75),
 
   // --- Repair cost per heated sqft, by condition tier (dollars) ---
-  repairCosmeticPerSqft: num(process.env.REPAIR_COSMETIC_PER_SQFT, 18),
-  repairModeratePerSqft: num(process.env.REPAIR_MODERATE_PER_SQFT, 40),
-  repairHeavyPerSqft:    num(process.env.REPAIR_HEAVY_PER_SQFT, 70),
-  repairSeverePerSqft:   num(process.env.REPAIR_SEVERE_PER_SQFT, 105),
+  repairCosmeticPerSqft: num(process.env.REPAIR_COSMETIC_PER_SQFT, 20),
+  repairModeratePerSqft: num(process.env.REPAIR_MODERATE_PER_SQFT, 38),
+  repairHeavyPerSqft:    num(process.env.REPAIR_HEAVY_PER_SQFT, 60),
+  repairSeverePerSqft:   num(process.env.REPAIR_SEVERE_PER_SQFT, 85),
   /** Applied on top of base rehab to absorb estimate error. 0.15 = +15%. */
   repairContingencyPct:  num(process.env.REPAIR_CONTINGENCY_PCT, 0.15),
   /** Roof replacement, per sqft of living area. Added when roof reads end-of-life. */
-  repairRoofPerSqft:     num(process.env.REPAIR_ROOF_PER_SQFT, 12),
+  repairRoofPerSqft:     num(process.env.REPAIR_ROOF_PER_SQFT, 9),
   /** Flat HVAC replacement allowance. */
-  repairHvacFlat:        num(process.env.REPAIR_HVAC_FLAT, 9000),
+  repairHvacFlat:        num(process.env.REPAIR_HVAC_FLAT, 8000),
   /** Assumed heated sqft when the feed omits LivingArea. Forces a confidence penalty. */
   fallbackLivingArea:    num(process.env.FALLBACK_LIVING_AREA, 1400),
 
