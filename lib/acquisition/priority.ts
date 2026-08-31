@@ -16,6 +16,7 @@
  */
 
 import type { PriceCutEntry } from "./outreach/sequence"
+import acquisitionConfig from "./config"
 import type { Listing, OfferResult } from "./types"
 
 export type PriorityInput = {
@@ -57,17 +58,24 @@ export function priorityScore({ listing, offer, priceCut }: PriorityInput): numb
   const ratio = offer.offerPrice / listing.listPrice
   const proximityFactor = Math.max(0, Math.min(1, (ratio - 0.5) / 0.4))
 
-  // Time on market as a motivation proxy, saturating at 90 days — beyond that it stops
-  // telling you anything new about the seller.
+  // Time on market, scored as a WINDOW rather than a ramp.
   //
-  // This used to weigh 0.15 and saturate at 120, which meant a 15-day listing and a
-  // 90-day listing came out about 9 points apart on a 100-point scale. That is noise,
-  // not a preference, and it is a strange thing to be indifferent about in a pipeline
-  // whose entire premise is that dated listings behave differently from fresh ones.
-  // 90 days is also where the signal flattens in practice: by then the seller has had
-  // the "it will move in spring" conversation and lost it.
+  // This previously rewarded age without limit, saturating at 90 days — which quietly
+  // made the stalest listing on the board the most attractive one. That is backwards.
+  // Time on market is evidence the seller has heard the market's answer, and that
+  // evidence accumulates for about two months and then starts meaning something else:
+  // past the ceiling it stops indicating motivation and starts indicating an obstacle
+  // no letter removes.
+  //
+  // So the curve rises across the qualifying window and peaks near its top, where the
+  // seller has had long enough to absorb the answer but the deal has not yet been
+  // worked and passed on by every buyer in the county. Anything beyond the ceiling has
+  // already been rejected in the prefilter and never reaches this function.
   const dom = listing.daysOnMarket ?? 0
-  const motivationFactor = Math.min(1, dom / 90)
+  const floor = acquisitionConfig.minDaysOnMarket
+  const ceiling = acquisitionConfig.maxDaysOnMarket
+  const span = Math.max(1, ceiling - floor)
+  const motivationFactor = Math.max(0, Math.min(1, (dom - floor) / span))
 
   // Deal size, log-scaled: a $400k ARV deal is worth more than a $200k one, but not
   // twice as much in practice, and linear scaling would starve the affordable end of

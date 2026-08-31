@@ -48,6 +48,21 @@ const acquisitionConfig = {
    * A qualifying price cut overrides this floor — see priceCutEntry() in
    * outreach/sequence.ts. The cut is better evidence than elapsed time.
    */
+  /**
+   * Upper bound on time on market. A listing is a target for a window, not forever.
+   *
+   * Past roughly three months something structural is usually wrong rather than
+   * situational: the price is a number the seller will not leave, there is a title or
+   * location problem no offer fixes, or every investor in the county has already worked
+   * it and passed. None of those are solved by another letter, and all of them look
+   * identical to motivation from the outside.
+   *
+   * Listings above this ceiling are not discarded as intelligence — they are the
+   * population most likely to expire unsold, which makes them the direct-to-seller list
+   * rather than the agent-outreach list.
+   */
+  maxDaysOnMarket: num(process.env.MAX_DAYS_ON_MARKET, 89),
+
   minDaysOnMarket: num(process.env.MIN_DAYS_ON_MARKET, 21),
   /**
    * Minimum heated sqft. Below this the rehab arithmetic stops working: the fixed costs

@@ -115,6 +115,9 @@ function prefilter(listing: Listing, priceCut: PriceCutEntry): string | null {
     if (dom < acquisitionConfig.minDaysOnMarket) {
       return `Day ${dom} on market, below the ${acquisitionConfig.minDaysOnMarket}-day floor — the seller is still anchored on list price.`
     }
+    if (dom > acquisitionConfig.maxDaysOnMarket) {
+      return `Day ${dom} on market, above the ${acquisitionConfig.maxDaysOnMarket}-day ceiling — stale beyond motivation; route to direct-to-seller instead.`
+    }
   }
 
   if (!BUYABLE_KINDS.has(listing.kind)) {
