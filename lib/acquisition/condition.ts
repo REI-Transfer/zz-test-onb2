@@ -227,7 +227,28 @@ export type VisionVerdict = {
  * stream alone justifies — that agreement is the thing worth acting on.
  */
 export function applyVisionResult(base: ConditionAssessment, vision: VisionVerdict): ConditionAssessment {
-  const blended = Math.round(base.conditionScore * 0.5 + vision.datedScore * 0.5)
+  // Weight each stream by how much it actually saw, rather than splitting 50/50.
+  //
+  // The flat split assumed both streams are informative. Measured against 293 live
+  // St. Petersburg listings, the text stream is not: its median score is ZERO, because
+  // agents in this market write ordinary marketing copy and almost never use the words
+  // the scorer looks for. Averaging a real photo verdict against that median halves it.
+  //
+  // The consequence was not subtle. Twenty-eight properties confirmed dated from their
+  // photos — scoring 82, 78, 76 — blended down to 41, 39, 38 and were rejected for
+  // "condition below threshold". Every one of them. The engine was not disagreeing with
+  // the photos; it was averaging them against silence.
+  //
+  // A text score of zero means "no keywords matched". It does not mean "the house is
+  // renovated". Treating absence of evidence as evidence of absence is the whole bug,
+  // and signalConfidence already measures the difference — it sits near 0.3 when the
+  // remarks said nothing and near 0.8 when they said something definite.
+  //
+  // So text earns weight in proportion to what it found, capped at 0.4 so photos stay
+  // the senior witness even when the copy is explicit. That ordering is deliberate and
+  // matches the module's own premise: remarks are marketing, photos are evidence.
+  const textWeight = Math.max(0, Math.min(0.4, base.signalConfidence * 0.5))
+  const blended = Math.round(base.conditionScore * textWeight + vision.datedScore * (1 - textWeight))
   const agreement = 1 - Math.abs(base.conditionScore - vision.datedScore) / 100
 
   return {
