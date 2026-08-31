@@ -32,57 +32,48 @@ const csv = (s: string): string[] => s.split(",").map((v) => v.trim()).filter(Bo
 
 
 /**
- * Who gets the paid photo pass.
- *
- * This used to gate on the text score alone — within 20 points of the threshold — which
- * quietly made the listing agent's vocabulary the arbiter of whether we ever looked at a
- * house. That is backwards, and it fails on exactly the segment worth the most.
+ * The text pass reads marketing copy, which is written to sell and is the one input the
+ * seller's agent fully controls.
  *
  * A dated property marketed well ("charming mid-century bungalow, tons of potential")
- * scores near zero on text and was rejected without a single photo being opened. Observed
- * live on the Tampa/St. Pete pull: four properties sitting 260-290 days with 25-40
- * published photos each, all rejected at a text score of 0.
+ * scores near zero on text. Observed live on the St. Pete pull: four properties sitting
+ * 260-290 days with 25-40 published photos each, all rejected at a text score of 0.
  *
  * And those are the deals. When the remarks announce a fixer, the market has already
- * priced the work in and every wholesaler in the county is looking at it. When the copy is
- * cheerful and the kitchen is from 1978, nobody has discounted it yet.
- *
- * So the gate now asks "could this plausibly be dated?" rather than "did the agent say so",
- * and answers it from structure the agent does not control:
- *
- *   - the text is already close to qualifying (the original signal, kept)
- *   - the house is old enough that original systems are the default assumption
- *   - the market has rejected it at this price for a full quarter
- *   - it is cheap per foot against its own submarket
- *
- * One hard exclusion survives: remarks that clearly claim a completed renovation. Those
- * carry heavy negative weight already, and a turnkey house is the most expensive false
- * positive available — it produces an insulting offer on a finished home.
- *
- * The economics support the wider net. Vision is the only paid step, but a missed deal
- * costs multiples of a photo pass, and the daily send cap means the real scarcity is good
- * candidates, not API calls.
+ * priced the work in and every wholesaler in the county is looking at it. When the copy
+ * is cheerful and the kitchen is from 1978, nobody has discounted it yet.
  */
-const VISION_MIN_YEAR_BUILT = 1985
-const VISION_STALE_DOM = 90
-
+/**
+ * Whether to pay for a photo read.
+ *
+ * This used to gate on year built (<=1985) and days on market (>=90), which meant a
+ * 1995 house with original cabinets and no keywords in the remarks was rejected without
+ * one photo being opened. On the first St Pete sweep that silently discarded 33 houses,
+ * and the failure is invisible: a listing nobody looked at leaves no evidence it was
+ * wrong to skip.
+ *
+ * A proxy for condition cannot outrank a photograph OF the condition. At roughly four
+ * cents a listing, looking is cheaper than being wrong, so the default is now to look.
+ *
+ * The single remaining skip is an affirmative one: the remarks explicitly claim a
+ * finished renovation AND the text score agrees. That direction is trustworthy because
+ * no agent undersells a renovation they actually paid for. Absence of keywords is not
+ * evidence of anything and never skips.
+ */
 export function shouldAssessPhotos(listing: Listing, condition: ConditionAssessment): boolean {
   // Nothing to look at.
   if (listing.photos.length === 0) return false
 
-  // Remarks explicitly claim a finished renovation. Negative-weighted phrases drive the
-  // score below zero territory; a strongly negative read is the one case where the text
-  // is trustworthy, because no agent undersells a renovation they actually did.
-  if (condition.conditionScore <= 5 && /renovat|remodel|turnkey|rebuilt|new construction/i.test(listing.publicRemarks)) {
+  if (
+    condition.conditionScore <= 5 &&
+    /renovat|remodel|turnkey|rebuilt|new construction/i.test(listing.publicRemarks)
+  ) {
     return false
   }
 
-  if (condition.conditionScore >= acquisitionConfig.minConditionScore - 20) return true
-  if (listing.yearBuilt !== undefined && listing.yearBuilt <= VISION_MIN_YEAR_BUILT) return true
-  if ((listing.daysOnMarket ?? 0) >= VISION_STALE_DOM) return true
-
-  return false
+  return true
 }
+
 
 /** Hard, free filters. Returns a rejection reason, or null to continue. */
 function prefilter(listing: Listing, priceCut: PriceCutEntry): string | null {
