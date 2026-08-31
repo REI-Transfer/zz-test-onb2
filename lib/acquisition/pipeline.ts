@@ -19,6 +19,15 @@ import { assessPhotos } from "./vision"
 /** RESO statuses worth acting on. Pending/withdrawn listings are not buyable. */
 const ACTIONABLE_STATUSES = new Set(["Active", "Coming Soon", "ActiveUnderContract"])
 
+/**
+ * The buy box, asserted at runtime. PropertyKind already excludes condos, townhomes,
+ * mobile and manufactured homes, but a TypeScript union vanishes at runtime and the
+ * failure it cannot catch is an adapter mis-mapping a condo onto "single-family". That
+ * mistake does not surface as a type error, it surfaces as a cash offer on a condo
+ * sitting in a listing agent's inbox. Cheap to assert; expensive to discover.
+ */
+const BUYABLE_KINDS = new Set(["single-family", "duplex", "triplex", "quadplex"])
+
 const csv = (s: string): string[] => s.split(",").map((v) => v.trim()).filter(Boolean)
 
 /** Hard, free filters. Returns a rejection reason, or null to continue. */
@@ -52,6 +61,22 @@ function prefilter(listing: Listing, priceCut: PriceCutEntry): string | null {
     if (dom < acquisitionConfig.minDaysOnMarket) {
       return `Day ${dom} on market, below the ${acquisitionConfig.minDaysOnMarket}-day floor — the seller is still anchored on list price.`
     }
+  }
+
+  if (!BUYABLE_KINDS.has(listing.kind)) {
+    return `Property kind "${listing.kind}" is outside the buy box.`
+  }
+
+  // Size floor. Note what this deliberately does NOT do: reject a listing whose sqft is
+  // missing. fallbackLivingArea assumes 1,400 when the feed omits LivingArea, so an
+  // unknown-size house would clear a 1,200 floor on a number nobody measured — and sqft
+  // is the multiplier the entire repair estimate hangs on, so passing it on an
+  // assumption is worse here than anywhere else in the pipeline. Missing sqft already
+  // carries its own confidence penalty (sqftKnown: false), which holds the listing for
+  // REVIEW instead of sending it. A person confirms the number; the pipeline never
+  // invents one and then mails an offer built on it.
+  if (listing.livingArea !== undefined && listing.livingArea < acquisitionConfig.minLivingArea) {
+    return `${listing.livingArea} sqft is below the ${acquisitionConfig.minLivingArea} sqft floor.`
   }
 
   const counties = csv(acquisitionConfig.allowedCounties)

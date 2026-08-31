@@ -1,6 +1,6 @@
 # Agent-Outreach Acquisition Pipeline
 
-Finds dated / as-is SFH and 2–4 unit listings in Hillsborough and Pinellas counties,
+Finds dated / as-is SFH and 1–4 unit listings at or above 1,200 heated sqft,
 prices them, and renders a cash LOI addressed to the **listing agent**.
 
 This is the outbound acquisition engine. It is unrelated to the seller survey funnel in

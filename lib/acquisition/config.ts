@@ -49,6 +49,14 @@ const acquisitionConfig = {
    * outreach/sequence.ts. The cut is better evidence than elapsed time.
    */
   minDaysOnMarket: num(process.env.MIN_DAYS_ON_MARKET, 21),
+  /**
+   * Minimum heated sqft. Below this the rehab arithmetic stops working: the fixed costs
+   * of a project — roof, HVAC, permits, holding, the trips — do not shrink with the
+   * house, so a 900 sqft rehab carries most of a 1,600 sqft rehab's overhead against a
+   * fraction of the resale. Small houses are not small deals, they are thin ones.
+   */
+  minLivingArea: num(process.env.MIN_LIVING_AREA, 1200),
+
   /** Condition score at or above this is "dated enough" to pursue. */
   minConditionScore: num(process.env.MIN_CONDITION_SCORE, 45),
   /**

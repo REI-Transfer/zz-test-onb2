@@ -129,6 +129,42 @@ async function main() {
       // Nothing gated on days on market before: priority.ts used it only to order the
       // queue, so a listing that hit the MLS this morning could be mailed this
       // afternoon — the one day of its life a below-list cash offer cannot land.
+      // --- buy box -------------------------------------------------------
+      // The type union already excludes these, but the union is compile-time only and
+      // the adapter is the layer most likely to get it wrong.
+      name: "Condo is outside the buy box",
+      expect: "REJECT",
+      run: () => evaluateListing({ listing: baseListing({ kind: "condo" as never }), arv: goodComps }),
+    },
+    {
+      name: "Mobile home is outside the buy box",
+      expect: "REJECT",
+      run: () => evaluateListing({ listing: baseListing({ kind: "mobile-home" as never }), arv: goodComps }),
+    },
+    {
+      name: "Quadplex is inside the buy box",
+      expect: "REVIEW",
+      run: () => evaluateListing({ listing: baseListing({ kind: "quadplex" }), arv: goodComps }),
+    },
+    {
+      name: "1,100 sqft is below the size floor",
+      expect: "REJECT",
+      run: () => evaluateListing({ listing: baseListing({ livingArea: 1100 }), arv: goodComps }),
+    },
+    {
+      name: "1,200 sqft sits exactly on the floor and passes",
+      expect: "REVIEW",
+      run: () => evaluateListing({ listing: baseListing({ livingArea: 1200 }), arv: goodComps }),
+    },
+    {
+      // The deliberate asymmetry with the DOM floor: unknown DOM rejects, unknown sqft
+      // does NOT. fallbackLivingArea would clear the floor on a number nobody measured,
+      // and sqft drives the whole repair estimate — so it is held, not mailed, not binned.
+      name: "Missing sqft is held for review, never auto-rejected on the floor",
+      expect: "REVIEW",
+      run: () => evaluateListing({ listing: baseListing({ livingArea: undefined }), arv: goodComps }),
+    },
+    {
       name: "Fresh listing below the DOM floor",
       expect: "REJECT",
       run: () => evaluateListing({ listing: baseListing({ daysOnMarket: 4 }), arv: goodComps }),
