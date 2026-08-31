@@ -125,7 +125,9 @@ export async function assessPhotos(listing: Listing): Promise<VisionVerdict | nu
     } else if (error instanceof Anthropic.APIError) {
       console.warn(`[vision] API error ${error.status} on ${listing.listingId}: ${error.message}`)
     } else {
-      console.warn(`[vision] unexpected failure on ${listing.listingId}:`, error)
+      // One line, not a stack trace per listing. A 500-listing run with a bad key was
+      // otherwise 500 stack traces, which buries every other signal in the log.
+      console.warn(`[vision] unexpected failure on ${listing.listingId}: ${(error as Error)?.message ?? error}`)
     }
     return null
   }
