@@ -2,7 +2,7 @@
 import { readFileSync, writeFileSync } from "node:fs"
 import { fromZillow } from "../lib/acquisition/adapters/zillow"
 import { assessCondition } from "../lib/acquisition/condition"
-import { capitulationScore, derivePriceSignals, readsAsDelusional } from "../lib/acquisition/capitulation"
+import { capitulationScore, derivePriceSignals, detectFlip, readsAsDelusional } from "../lib/acquisition/capitulation"
 import { evaluateListing } from "../lib/acquisition/pipeline"
 import type { ArvEstimate } from "../lib/acquisition/types"
 
@@ -18,6 +18,7 @@ const reasons: Record<string, number> = {}
     if (!listing) { dropped++; continue }
     const cond = assessCondition({ listing })
     const sig = derivePriceSignals(rec.priceHistory ?? [], listing.listPrice, rec.zestimate)
+    const flip = detectFlip(rec.priceHistory ?? [], listing.listPrice)
     const arv: ArvEstimate = { arv: rec.zestimate && rec.zestimate > 0 ? rec.zestimate : Math.round(listing.listPrice * 1.02), comparables: [], source: "provider" }
     const r = await evaluateListing({ listing, arv })
     decisions[r.decision] = (decisions[r.decision] ?? 0) + 1
@@ -33,6 +34,7 @@ const reasons: Record<string, number> = {}
       cuts: sig.cuts, reductionPct: Math.round(sig.totalReductionPct * 1000) / 10,
       capitulation: capitulationScore(sig),
       delusional: readsAsDelusional(sig, listing.daysOnMarket),
+      likelyFlip: flip.isLikelyFlip, monthsSincePurchase: flip.monthsSincePurchase, markup: flip.markupRatio,
       decision: r.decision, offer: r.offer.offerPrice, confidence: r.offer.confidence,
       agent: listing.listAgent.fullName, agentPhone: listing.listAgent.phone,
       flLicense: listing.listAgent.mlsId, brokerage: listing.listAgent.brokerageName,
@@ -49,6 +51,10 @@ const reasons: Record<string, number> = {}
   console.log(`   at or above the 45 threshold on TEXT ALONE: ${out.filter(o=>o.conditionText>=45).length}`)
   console.log(`   would reach the photo pass:                 ${out.filter(o=>o.photos>0 && (o.conditionText>=25 || (o.year??9999)<=1985)).length}`)
   const cap = out.map(o=>o.capitulation).sort((a,b)=>a-b)
+  const flips=out.filter(o=>o.likelyFlip)
+  console.log(`\nLIKELY FLIPS (recent purchase + 25%+ markup): ${flips.length} of ${out.length}`)
+  const nonflip=out.filter(o=>!o.likelyFlip && (o.year??9999)<=1985)
+  console.log(`PRE-1986 AND NOT A FLIP — the real target pool: ${nonflip.length}`)
   console.log(`\nCAPITULATION  median ${cap[Math.floor(cap.length/2)]}  |  zero-cut sellers: ${out.filter(o=>o.cuts===0).length}  |  flagged delusional: ${out.filter(o=>o.delusional).length}`)
   writeFileSync("/tmp/analyzed.json", JSON.stringify(out, null, 1))
   const cols = Object.keys(out[0])

@@ -1,5 +1,5 @@
 /** Ego vs capitulation. Cases drawn from the live Tampa/St. Pete pull. */
-import { capitulationScore, derivePriceSignals, readsAsDelusional } from "../lib/acquisition/capitulation"
+import { capitulationScore, derivePriceSignals, detectFlip, readsAsDelusional } from "../lib/acquisition/capitulation"
 
 const NOW = new Date("2026-08-31T00:00:00Z")
 let pass = 0, fail = 0
@@ -45,6 +45,19 @@ check("High ratio alone, but recently listed, is not delusion",
   readsAsDelusional(derivePriceSignals([{ date: "2026-08-01", event: "Listed for sale", price: 600_000 }], 600_000, 300_000, NOW), 20), false)
 check("High ratio with a cut is not delusion",
   readsAsDelusional({ cuts: 1, totalReductionPct: 0.02, listToZestimate: 2.0 }, 400), false)
+
+// --- flip detection ---------------------------------------------------------
+// Bought 14 months ago at $260k, relisted at $430k. That is a renovation being sold back.
+check("Recent purchase + big markup reads as a flip",
+  detectFlip([{ date: "2025-07-01", event: "Sold", price: 260_000 }], 430_000, NOW).isLikelyFlip, true)
+// Long-held family home. Appreciation is not a flip.
+check("Long-held home with appreciation is NOT a flip",
+  detectFlip([{ date: "2014-03-01", event: "Sold", price: 180_000 }], 430_000, NOW).isLikelyFlip, false)
+// Recent purchase, listed near what they paid. Someone moving, not flipping.
+check("Recent purchase at a flat price is NOT a flip",
+  detectFlip([{ date: "2025-09-01", event: "Sold", price: 400_000 }], 415_000, NOW).isLikelyFlip, false)
+check("No sale history means no flip verdict",
+  detectFlip([{ date: "2026-06-01", event: "Listed for sale", price: 400_000 }], 400_000, NOW).isLikelyFlip, false)
 
 console.log(`\n${fail === 0 ? "All cases passed." : `${fail} FAILED`}  (${pass} passed)`)
 process.exit(fail === 0 ? 0 : 1)

@@ -110,3 +110,57 @@ export function readsAsDelusional(s: PriceSignals, daysOnMarket: number | undefi
   if ((daysOnMarket ?? 0) < 90) return false
   return (s.listToZestimate ?? 0) >= 1.4
 }
+
+/**
+ * Is the seller a flipper protecting a basis?
+ *
+ * A third population the model did not separate, and on a hand-read sample of the
+ * St. Petersburg 21-89 day window it was the DOMINANT one: five of six stale listings
+ * were not dated houses at all, they were renovated houses priced too high.
+ *
+ * That distinction decides whether an offer can ever work. The pitch is "we absorb the
+ * repair risk and close fast at a discount" — but a flipper has already absorbed the
+ * repair risk, has no repairs left to discount, and has a purchase price plus a
+ * renovation budget to protect. They will not take ARV x 0.75 minus zero repairs. They
+ * will keep cutting until the market clears, and they can wait, because this is a
+ * business decision rather than a life event.
+ *
+ * They are not delusional and not desperate. They are a competitor's inventory.
+ *
+ * The signature is in the price history and needs both halves: a recent arms-length
+ * purchase, and a relist materially above it. Either alone is ordinary — people do sell
+ * houses they bought a few years ago, and appreciation is real — but a purchase 14 months
+ * ago at $260k relisted at $430k is a renovation someone is trying to sell back.
+ */
+export type FlipSignals = {
+  isLikelyFlip: boolean
+  /** Months between the last sale and now. */
+  monthsSincePurchase?: number
+  /** Current list ÷ last sale price. */
+  markupRatio?: number
+}
+
+const FLIP_MAX_MONTHS = 30
+const FLIP_MIN_MARKUP = 1.25
+
+export function detectFlip(
+  history: PriceHistoryEntry[],
+  currentPrice: number,
+  now = new Date(),
+): FlipSignals {
+  const sales = history
+    .filter((e) => /^sold$/i.test(String(e.event)) && e.date && typeof e.price === "number" && e.price! > 0)
+    .sort((a, b) => new Date(b.date!).getTime() - new Date(a.date!).getTime())
+
+  const last = sales[0]
+  if (!last) return { isLikelyFlip: false }
+
+  const months = (now.getTime() - new Date(last.date!).getTime()) / (86_400_000 * 30.44)
+  const markup = currentPrice / last.price!
+
+  return {
+    isLikelyFlip: months <= FLIP_MAX_MONTHS && markup >= FLIP_MIN_MARKUP,
+    monthsSincePurchase: Math.round(months),
+    markupRatio: Math.round(markup * 100) / 100,
+  }
+}
