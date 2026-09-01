@@ -39,10 +39,33 @@ Hard rules:
 - If you are told to hold firm, do not soften the number or hint that more is available. Holding firm politely is the entire message.
 - Do not apologise for the offer or editorialise about the seller's situation.
 
-Close by inviting a reply, and make it easy for them to come back with information that would change the number (recent work, permits, corrected details).`
+Close by inviting a reply, and make it easy for them to come back with information that would change the number (recent work, permits, corrected details).
+
+Who is writing:
+- The cold letter and its follow-ups were sent by an outreach rep. The first reply on a live thread hands the conversation to the acquisitions manager, and the outreach rep makes that introduction in one plain sentence before handing over. Every message after that is from the acquisitions manager.
+- The managing partner signs contracts and does not appear in these messages. Do not name them, and do not promise their involvement or availability.
+- Never introduce anyone you were not given a name for. If a handoff line was not supplied, simply do not mention one.`
 
 let client: Anthropic | null = null
 const getClient = (): Anthropic => (client ??= new Anthropic())
+
+/**
+ * The one-time introduction from the outreach rep to the acquisitions manager.
+ *
+ * The handoff is a real signal, not decoration: it tells the agent their thread stopped
+ * being outbound and became a deal, and it gives them a named person with a direct
+ * number. It fires ONCE, on the first reply to a live thread, and never again -- an
+ * introduction repeated on message four reads as a bot.
+ *
+ * Returns null when no acquisitions manager is configured, in which case the outreach
+ * rep simply keeps the thread. Silence is correct here; inventing a colleague is not.
+ */
+export function handoffLine(alreadyIntroduced: boolean): string | null {
+  const cfg = acquisitionConfig
+  if (alreadyIntroduced || !cfg.acquisitionsName) return null
+  const phone = cfg.acquisitionsPhone ? ` (${cfg.acquisitionsPhone})` : ""
+  return `Putting you with ${cfg.acquisitionsName}${phone}, our ${cfg.acquisitionsTitle.toLowerCase()} \u2014 they handle the diligence and paperwork from here and can move faster than I can.`
+}
 
 export type DraftInput = {
   state: NegotiationState

@@ -182,8 +182,25 @@ const acquisitionConfig = {
 
   // --- LOI content ---
   buyerEntity:      process.env.LOI_BUYER_ENTITY      ?? "",
-  buyerSignerName:  process.env.LOI_SIGNER_NAME       ?? "",
+
+  // Three roles, because outreach and authority are not the same job and an agent can
+  // tell. The managing partner appearing in a cold email reads as a mass mailing (no
+  // principal writes 200 of these); the same name appearing once a deal is live reads
+  // as escalation. So the cold sequence is signed by the outreach rep, the acquisitions
+  // manager is introduced only when an agent engages, and the principal appears at
+  // contract.
+  //
+  // All three must be REAL people. The letter asks a licensed fiduciary to act on it,
+  // they will call the number, and their seller relies on the answer.
+  buyerSignerName:  process.env.LOI_SIGNER_NAME       ?? "",   // outreach rep, signs T1-T4
   buyerSignerTitle: process.env.LOI_SIGNER_TITLE      ?? "Acquisitions",
+  /** Acquisitions manager. Introduced by the outreach rep once a thread goes live. */
+  acquisitionsName:  process.env.LOI_ACQUISITIONS_NAME  ?? "",
+  acquisitionsTitle: process.env.LOI_ACQUISITIONS_TITLE ?? "Acquisitions Manager",
+  acquisitionsPhone: process.env.LOI_ACQUISITIONS_PHONE ?? "",
+  /** Managing partner. Signs the contract; never appears in cold outreach. */
+  principalName:    process.env.LOI_PRINCIPAL_NAME    ?? "",
+  principalTitle:   process.env.LOI_PRINCIPAL_TITLE   ?? "Managing Partner",
   buyerEmail:       process.env.LOI_REPLY_EMAIL       ?? "",
   buyerPhone:       process.env.LOI_PHONE             ?? "",
   // Required by CAN-SPAM on every commercial message. renderLoi() throws without it.
