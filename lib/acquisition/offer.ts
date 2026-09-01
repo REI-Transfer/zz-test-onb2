@@ -128,7 +128,14 @@ export function computeOffer({
     return { confidence: r.confidence, confidenceBreakdown: r.breakdown }
   })()
 
-  const offerPrice = Math.round(arv.arv * acquisitionConfig.offerArvMultiplier - repairs.total)
+  // Rounded DOWN to the nearest $500. An offer of $201,709 announces that a spreadsheet
+  // wrote it, and invites the agent to argue the arithmetic instead of the price; a
+  // person offers $201,500. Rounding down rather than to nearest keeps the number
+  // inside the model's ceiling rather than a few hundred dollars past it, and this
+  // happens HERE rather than in the letter so the ledger, the GHL opportunity and the
+  // negotiation engine's authority limit all agree on one figure.
+  const raw = arv.arv * acquisitionConfig.offerArvMultiplier - repairs.total
+  const offerPrice = Math.floor(raw / 500) * 500
 
   const reject = (reason: string): OfferResult => ({
     decision: "REJECT",

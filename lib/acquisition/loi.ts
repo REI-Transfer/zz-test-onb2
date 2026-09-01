@@ -14,6 +14,27 @@
 import acquisitionConfig from "./config"
 import type { ConditionAssessment, Listing, OfferResult, RepairEstimate } from "./types"
 
+// The feed hands us "1511 19TH AVENUE S". Shouting the address at the recipient is a
+// mail-merge tell, so it is title-cased, with directionals and ordinals left alone
+// because "1511 19Th Avenue S" is a worse tell than the caps were.
+const DIRECTIONALS = new Set(["N", "S", "E", "W", "NE", "NW", "SE", "SW"])
+const titleCase = (s: string): string =>
+  s
+    .split(/\s+/)
+    .map((w) => {
+      const up = w.toUpperCase()
+      if (DIRECTIONALS.has(up)) return up
+      if (/^\d+(ST|ND|RD|TH)$/.test(up)) return up.toLowerCase().replace(/^\d+/, (d) => d)
+      return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()
+    })
+    .join(" ")
+
+// Displayed to the nearest $5k. The offer itself is exact to the dollar in the ledger,
+// but an ARV quoted as "$472,371" reads as a machine's output in the one paragraph
+// whose whole job is to sound like a person's judgement. Estimates get stated the way
+// an estimate is actually spoken.
+const approx = (n: number): string => `$${(Math.round(n / 5000) * 5000).toLocaleString("en-US")}`
+
 const usd = (n: number): string => {
   if (!Number.isFinite(n)) {
     throw new Error(`Refusing to render a letter with a non-numeric dollar amount: ${n}`)
@@ -44,11 +65,11 @@ export function renderLoi({ listing, offer, repairs, condition }: LoiInput): {
   }
 
   const cfg = acquisitionConfig
-  const addr = `${listing.address.street}, ${listing.address.city}, ${listing.address.state} ${listing.address.postalCode}`
+  const addr = `${titleCase(listing.address.street)}, ${listing.address.city}, ${listing.address.state} ${listing.address.postalCode}`
   const agentFirstName = listing.listAgent.fullName.trim().split(/\s+/)[0] || "there"
   const buyer = cfg.buyerEntity || "[LOI_BUYER_ENTITY not set]"
 
-  const subject = `Cash offer: ${listing.address.street}, ${listing.address.city} (MLS# ${listing.listingId})`
+  const subject = `Cash offer: ${titleCase(listing.address.street)}, ${listing.address.city} (MLS# ${listing.listingId})`
 
   // Naming the scope we priced invites a correction rather than a dismissal — an agent
   // who knows the roof was done last year will say so, which is a reply either way.
@@ -83,13 +104,11 @@ I'm with ${buyer}, a Tampa Bay based homebuying company. Submitting a cash offer
   Closing:          On or before ${cfg.closingDays} days from executed contract
   Title/closing:    Buyer's choice of Florida title company, seller may select their own
 
-How we arrived at the number: we're estimating after-repair value at ${usd(offer.arv)} and a repair budget of roughly ${usd(repairs.total)} to bring the property to a rentable/resale standard. ${scopeNote} That estimate came from photos, so it can be wrong in either direction. If the house is in better shape than it photographs, or your seller has had work done that isn't in the listing (roof, HVAC, electrical, plumbing), send it over and I'll requote the same day. The number goes up as readily as it comes down.
+How we got there: we think it's worth about ${approx(offer.arv)} once it's fixed, and that fixing it runs somewhere near ${approx(repairs.total)}. ${scopeNote} That estimate came from photos, so it can be wrong in either direction. If the house is in better shape than it photographs, or your seller has had work done that isn't in the listing (roof, HVAC, electrical, plumbing), send it over and I'll requote the same day. The number goes up as readily as it comes down.
 
-We buy in as-is condition, pay all our own closing costs, and don't ask for repairs or credits. There's no financing to fall through and no appraisal contingency. If your seller needs a specific closing date or a post-closing occupancy period, we can accommodate both.
+We buy as-is, pay our own closing costs, and don't come back asking for repairs or credits. If your seller needs a particular closing date or time to move, both are easy.
 
-This letter is an expression of interest and is not a binding contract or an offer capable of acceptance; it's intended as a starting point for a formal contract on terms acceptable to both parties. It's open through ${addDays(cfg.offerValidDays)}.
-
-Proof of funds available on request. Happy to talk through it if a call is easier.${licenseDisclosure}
+Proof of funds on request, and happy to talk it through if a call is easier. Open through ${addDays(cfg.offerValidDays)}. This is an expression of interest, not a binding contract.${licenseDisclosure}
 
 Best regards,
 
