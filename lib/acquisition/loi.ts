@@ -95,7 +95,7 @@ Reply with "remove" and I won't contact you about this or any other listing.`
 
   const body = `Hi ${agentFirstName},
 
-I'm with ${buyer}, a Tampa Bay based homebuying company. Submitting a cash offer on ${addr} (MLS# ${listing.listingId}), currently listed at ${usd(listing.listPrice)}.
+I'm with ${buyer}, ${cfg.buyerDescriptor}. Submitting a cash offer on ${addr} (MLS# ${listing.listingId}), currently listed at ${usd(listing.listPrice)}.
 
   Offer price:      ${usd(offer.offerPrice)}
   Terms:            All cash, no financing contingency

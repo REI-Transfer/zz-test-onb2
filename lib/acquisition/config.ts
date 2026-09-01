@@ -182,6 +182,18 @@ const acquisitionConfig = {
 
   // --- LOI content ---
   buyerEntity:      process.env.LOI_BUYER_ENTITY      ?? "",
+  /**
+   * How the company describes itself in one clause, in the first line of contact.
+   *
+   * States where the business SITS, never where it buys. "a Tampa Bay homebuying
+   * company" claims a territory and quietly contradicts you the moment a letter lands
+   * in Orlando or Jacksonville; "based in the Tampa Bay area" stays true statewide.
+   * An agent who spots that mismatch has a reason to doubt the rest of the letter, and
+   * it is the same scent problem that already bit Elevate's ad copy.
+   *
+   * Config rather than a literal so expansion is one environment change.
+   */
+  buyerDescriptor:  process.env.LOI_COMPANY_DESCRIPTOR ?? "a homebuying company based in the Tampa Bay area",
 
   // Three roles, because outreach and authority are not the same job and an agent can
   // tell. The managing partner appearing in a cold email reads as a mass mailing (no

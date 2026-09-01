@@ -75,6 +75,7 @@ export type MergeFields = {
   offerPrice: string
   listPrice: string
   buyerEntity: string
+  buyerDescriptor: string
   signerName: string
   signerTitle: string
   phone: string
@@ -218,7 +219,7 @@ If we're still apart, tell me where they need to be and I'll tell you straight a
  * considered answer, because the email already does all three and a text that tries to
  * do the same is just a worse email.
  */
-export const T1_SMS = `{{agentFirstName}}, {{signerName}} with {{buyerEntity}}, a Tampa Bay homebuying company. Just emailed you a written cash offer on {{street}}. Sending this so it does not sit in spam.`
+export const T1_SMS = `{{agentFirstName}}, {{signerName}} with {{buyerEntity}}, {{buyerDescriptor}}. Just emailed you a written cash offer on {{street}}. Sending this so it does not sit in spam.`
 
 export const SEQUENCE: TouchTemplate[] = [T2, T3, T4]
 export const EVENT_TOUCHES: TouchTemplate[] = [T5]
