@@ -42,10 +42,18 @@ export type TouchTemplate = {
   /**
    * Optional SMS companion, sent shortly after the email in the same step.
    *
-   * NOT a shortened email. Its only job is to make the email get opened by a person
-   * who is out on showings, so it names the property, the number, and who is writing,
-   * then stops. Every one carries identification and an opt-out because CTIA requires
-   * both on a first message and carriers filter on their absence.
+   * NOT a shortened email, and NOT a second copy of the offer. Its only job is to get
+   * the letter opened by someone who is out on showings. So it names the property and
+   * who is writing, points at the inbox, and stops.
+   *
+   * Deliberately no price. A number in a text invites a yes or no on the number alone,
+   * before the agent has seen the arithmetic that makes it defensible, and a lowball
+   * read cold on a phone screen gets deleted. The email is where the case lives; the
+   * text exists to get it read.
+   *
+   * Opt-out language appears on the FIRST message only. Carriers honour STOP whether
+   * or not it is printed, and repeating it every time is noise, but A2P campaigns get
+   * filtered when the opening message carries no disclosure at all.
    *
    * DELIVERY IS GATED. See ACQ_SMS_ENABLED in config: these are written and rendered
    * but not wired to a sender, because Florida's Telephone Solicitation Act requires
@@ -99,7 +107,7 @@ If your seller isn't entertaining offers below list right now, that's a fair ans
 
 {{signerName}}
 {{signerTitle}} · {{buyerEntity}}{{phoneLine}}`,
-  smsBody: `{{agentFirstName}}, {{signerName}} with {{buyerEntity}} again re {{street}}. Emailed proof of funds and a title reference you're welcome to verify. If your seller isn't looking at below-list right now just say so and I'll leave it. Reply STOP to opt out.`,
+  smsBody: `{{agentFirstName}}, {{signerName}} at {{buyerEntity}} again on {{street}}. Sent proof of funds and a title company reference to your email, both easy to verify. Worth two minutes before you write us off.`,
   answers: "Are you a real buyer, or another wholesaler who will tie up my listing and vanish?",
 }
 
@@ -137,7 +145,7 @@ And if I've got the condition wrong, if the roof, HVAC or electrical has been do
 
 {{signerName}}
 {{signerTitle}} · {{buyerEntity}}{{phoneLine}}`,
-  smsBody: `{{agentFirstName}}, {{signerName}} at {{buyerEntity}}. On {{street}}: if the number is the issue, we can move on closing date, let your seller stay after closing, or waive repair requests. Which one would actually help? Reply STOP to opt out.`,
+  smsBody: `{{agentFirstName}}, {{signerName}} at {{buyerEntity}}. Followed up by email on {{street}}. If price is the sticking point there is more room on terms than on the number. Details are in there.`,
   answers: "The price doesn't work for my seller.",
 }
 
@@ -164,7 +172,7 @@ Either way, good luck with it. If you get other dated inventory in {{county}} Co
 
 {{signerName}}
 {{signerTitle}} · {{buyerEntity}}{{phoneLine}}`,
-  smsBody: `{{agentFirstName}}, closing our file on {{street}} so I stop bothering you. Our {{offerPrice}} cash offer stands if anything changes, 30 or 60 days out. {{signerName}}, {{buyerEntity}}. Reply STOP to opt out.`,
+  smsBody: `{{agentFirstName}}, closing our file on {{street}} so I stop bothering you. The last email has what still stands if anything changes. {{signerName}}, {{buyerEntity}}.`,
   answers: "I've moved on / this thread is dead.",
 }
 
@@ -195,7 +203,7 @@ If we're still apart, tell me where they need to be and I'll tell you straight a
 
 {{signerName}}
 {{signerTitle}} · {{buyerEntity}}{{phoneLine}}`,
-  smsBody: `{{agentFirstName}}, saw {{street}} came down to {{newListPrice}}. Our {{offerPrice}} cash offer still stands, no financing or appraisal, closes in {{closingDays}} days. Worth another look? {{signerName}}, {{buyerEntity}}. Reply STOP to opt out.`,
+  smsBody: `{{agentFirstName}}, saw {{street}} came down. Just emailed you, our offer still stands and has not changed. {{signerName}}, {{buyerEntity}}.`,
   answers: "Circumstances changed and your old offer is worth another look.",
 }
 
@@ -207,7 +215,7 @@ If we're still apart, tell me where they need to be and I'll tell you straight a
  * considered answer, because the email already does all three and a text that tries to
  * do the same is just a worse email.
  */
-export const T1_SMS = `{{agentFirstName}}, {{signerName}} with {{buyerEntity}}, a Tampa Bay homebuying company. Just emailed you a written cash offer on {{street}} at {{offerPrice}}, {{closingDays}}-day close. Sending this so it doesn't sit in spam. Reply STOP to opt out.`
+export const T1_SMS = `{{agentFirstName}}, {{signerName}} with {{buyerEntity}}, a Tampa Bay homebuying company. Just emailed you a written cash offer on {{street}}. Sending this so it does not sit in spam. Reply STOP to opt out.`
 
 export const SEQUENCE: TouchTemplate[] = [T2, T3, T4]
 export const EVENT_TOUCHES: TouchTemplate[] = [T5]
