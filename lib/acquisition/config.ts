@@ -186,6 +186,8 @@ const acquisitionConfig = {
   buyerSignerTitle: process.env.LOI_SIGNER_TITLE      ?? "Acquisitions",
   buyerEmail:       process.env.LOI_REPLY_EMAIL       ?? "",
   buyerPhone:       process.env.LOI_PHONE             ?? "",
+  // Required by CAN-SPAM on every commercial message. renderLoi() throws without it.
+  buyerPostalAddress: process.env.LOI_POSTAL_ADDRESS    ?? "",
   earnestMoney:     num(process.env.LOI_EARNEST_MONEY, 5_000),
   inspectionDays:   num(process.env.LOI_INSPECTION_DAYS, 10),
   closingDays:      num(process.env.LOI_CLOSING_DAYS, 21),

@@ -48,7 +48,7 @@ export function renderLoi({ listing, offer, repairs, condition }: LoiInput): {
   const agentFirstName = listing.listAgent.fullName.trim().split(/\s+/)[0] || "there"
   const buyer = cfg.buyerEntity || "[LOI_BUYER_ENTITY not set]"
 
-  const subject = `Cash offer — ${listing.address.street}, ${listing.address.city} (MLS# ${listing.listingId})`
+  const subject = `Cash offer: ${listing.address.street}, ${listing.address.city} (MLS# ${listing.listingId})`
 
   // Naming the scope we priced invites a correction rather than a dismissal — an agent
   // who knows the roof was done last year will say so, which is a reply either way.
@@ -60,9 +60,21 @@ export function renderLoi({ listing, offer, repairs, condition }: LoiInput): {
     ? `\n\nDisclosure: ${cfg.buyerSignerName || "The undersigned"} holds an active Florida real estate license (# ${cfg.flLicenseNumber}) and is purchasing this property for their own account as a principal, not as a representative of any other party.`
     : ""
 
+  // CAN-SPAM applies to commercial email including agent-to-agent: a valid physical
+  // postal address and a working opt-out are both required, and neither is optional
+  // because the recipient is a business. Refuse to render without them rather than
+  // shipping a letter that is quietly unlawful.
+  if (!cfg.buyerPostalAddress) {
+    throw new Error(
+      "Refusing to render a letter with no postal address: CAN-SPAM requires one. Set LOI_POSTAL_ADDRESS.",
+    )
+  }
+  const footer = `${buyer} | ${cfg.buyerPostalAddress}
+Reply with "remove" and I won't contact you about this or any other listing.`
+
   const body = `Hi ${agentFirstName},
 
-Submitting a cash offer on ${addr} (MLS# ${listing.listingId}), currently listed at ${usd(listing.listPrice)}.
+I'm with ${buyer}, a Tampa Bay based homebuying company. Submitting a cash offer on ${addr} (MLS# ${listing.listingId}), currently listed at ${usd(listing.listPrice)}.
 
   Offer price:      ${usd(offer.offerPrice)}
   Terms:            All cash, no financing contingency
@@ -71,7 +83,7 @@ Submitting a cash offer on ${addr} (MLS# ${listing.listingId}), currently listed
   Closing:          On or before ${cfg.closingDays} days from executed contract
   Title/closing:    Buyer's choice of Florida title company, seller may select their own
 
-How we arrived at the number: we're estimating after-repair value at ${usd(offer.arv)} and a repair budget of roughly ${usd(repairs.total)} to bring the property to a rentable/resale standard. ${scopeNote} If your seller has had recent work done that isn't reflected in the listing — roof, HVAC, electrical, plumbing — send it over and I'll requote the same day. The number moves with the scope.
+How we arrived at the number: we're estimating after-repair value at ${usd(offer.arv)} and a repair budget of roughly ${usd(repairs.total)} to bring the property to a rentable/resale standard. ${scopeNote} That estimate came from photos, so it can be wrong in either direction. If the house is in better shape than it photographs, or your seller has had work done that isn't in the listing (roof, HVAC, electrical, plumbing), send it over and I'll requote the same day. The number goes up as readily as it comes down.
 
 We buy in as-is condition, pay all our own closing costs, and don't ask for repairs or credits. There's no financing to fall through and no appraisal contingency. If your seller needs a specific closing date or a post-closing occupancy period, we can accommodate both.
 
@@ -83,7 +95,9 @@ Best regards,
 
 ${cfg.buyerSignerName || "[LOI_SIGNER_NAME not set]"}
 ${cfg.buyerSignerTitle}
-${buyer}${cfg.buyerPhone ? `\n${cfg.buyerPhone}` : ""}${cfg.buyerEmail ? `\n${cfg.buyerEmail}` : ""}`
+${buyer}${cfg.buyerPhone ? `\n${cfg.buyerPhone}` : ""}${cfg.buyerEmail ? `\n${cfg.buyerEmail}` : ""}
+
+${footer}`
 
   return { subject, body, toEmail: listing.listAgent.email }
 }

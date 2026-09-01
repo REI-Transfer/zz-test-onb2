@@ -14,6 +14,9 @@ process.env.AUTO_SEND_MIN_CONFIDENCE = "50"
 process.env.LOI_BUYER_ENTITY = "Bay Area Property Partners LLC"
 process.env.LOI_SIGNER_NAME = "William"
 process.env.LOI_FL_LICENSE_NUMBER = "SL1234567"
+// CAN-SPAM: renderLoi() refuses to build a letter without a postal address, so the
+// fixtures have to carry one the way production will.
+process.env.LOI_POSTAL_ADDRESS = "100 Test St, St. Petersburg, FL 33701"
 
 async function main() {
   const { evaluateListing } = await import("../lib/acquisition/pipeline")
