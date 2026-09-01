@@ -39,6 +39,21 @@ export type TouchTemplate = {
   body: string
   /** The silent objection this touch exists to answer. Documentation, not sent. */
   answers: string
+  /**
+   * Optional SMS companion, sent shortly after the email in the same step.
+   *
+   * NOT a shortened email. Its only job is to make the email get opened by a person
+   * who is out on showings, so it names the property, the number, and who is writing,
+   * then stops. Every one carries identification and an opt-out because CTIA requires
+   * both on a first message and carriers filter on their absence.
+   *
+   * DELIVERY IS GATED. See ACQ_SMS_ENABLED in config: these are written and rendered
+   * but not wired to a sender, because Florida's Telephone Solicitation Act requires
+   * prior express written consent for commercial texts and carries a private right of
+   * action with per-message statutory damages. Every one of these numbers is a Florida
+   * mobile. The copy is ready for the day that question is answered.
+   */
+  smsBody?: string
 }
 
 export type MergeFields = {
@@ -84,6 +99,7 @@ If your seller isn't entertaining offers below list right now, that's a fair ans
 
 {{signerName}}
 {{signerTitle}} · {{buyerEntity}}{{phoneLine}}`,
+  smsBody: `{{agentFirstName}}, {{signerName}} with {{buyerEntity}} again re {{street}}. Emailed proof of funds and a title reference you're welcome to verify. If your seller isn't looking at below-list right now just say so and I'll leave it. Reply STOP to opt out.`,
   answers: "Are you a real buyer, or another wholesaler who will tie up my listing and vanish?",
 }
 
@@ -106,21 +122,22 @@ const T3: TouchTemplate = {
   subject: "",
   body: `Hi {{agentFirstName}},
 
-No reply on {{street}}, so I'll assume the number was the sticking point. Fair enough — price is one lever and it's usually not the only one that matters to a seller.
+No reply on {{street}}, so I'll assume the number was the sticking point. Fair enough. Price is one lever and it's usually not the only one that matters to a seller.
 
 Things we can move that don't cost your seller anything:
 
-  · Closing date — {{closingDays}} days, or 90 if they need time to find their next place
-  · Post-closing occupancy — they can stay after we close, rent-free, we've done it before
-  · Inspection — we can shorten the {{inspectionDays}}-day period, or waive repair requests entirely
-  · Certainty — no financing, no appraisal, no lender to fall through
+  · Closing date: {{closingDays}} days, or 90 if they need time to find their next place
+  · Post-closing occupancy: they can stay after we close, rent-free, we've done it before
+  · Inspection: we can shorten the {{inspectionDays}}-day period, or waive repair requests entirely
+  · Certainty: no financing, no appraisal, no lender to fall through
 
 If any of that changes the picture, tell me which one matters and I'll put it in writing.
 
-And if I've got the condition wrong — if the roof, HVAC or electrical has been done recently and it isn't in the listing — send it over and I'll requote the same day. My number moves with the scope.
+And if I've got the condition wrong, if the roof, HVAC or electrical has been done recently and it isn't in the listing, send it over and I'll requote the same day. My number moves with the scope.
 
 {{signerName}}
 {{signerTitle}} · {{buyerEntity}}{{phoneLine}}`,
+  smsBody: `{{agentFirstName}}, {{signerName}} at {{buyerEntity}}. On {{street}}: if the number is the issue, we can move on closing date, let your seller stay after closing, or waive repair requests. Which one would actually help? Reply STOP to opt out.`,
   answers: "The price doesn't work for my seller.",
 }
 
@@ -141,12 +158,13 @@ const T4: TouchTemplate = {
 
 I'm closing our file on {{street}} so I stop cluttering your inbox.
 
-Our offer at {{offerPrice}} stands if anything changes. If it's still sitting in 30 or 60 days, or your seller's timeline shifts, reply to this email and we can pick it straight back up — no need to start over.
+Our offer at {{offerPrice}} stands if anything changes. If it's still sitting in 30 or 60 days, or your seller's timeline shifts, reply to this email and we can pick it straight back up. No need to start over.
 
 Either way, good luck with it. If you get other dated inventory in {{county}} County that needs a cash buyer, I'd rather hear from you early than see it on the MLS.
 
 {{signerName}}
 {{signerTitle}} · {{buyerEntity}}{{phoneLine}}`,
+  smsBody: `{{agentFirstName}}, closing our file on {{street}} so I stop bothering you. Our {{offerPrice}} cash offer stands if anything changes, 30 or 60 days out. {{signerName}}, {{buyerEntity}}. Reply STOP to opt out.`,
   answers: "I've moved on / this thread is dead.",
 }
 
@@ -166,27 +184,38 @@ const T5: TouchTemplate = {
   id: "T5_PRICE_CUT",
   variant: "v1-reduction",
   dayOffset: null,
-  subject: "Re: {{street}} — saw the price change",
+  subject: "Re: {{street}}, saw the price change",
   body: `Hi {{agentFirstName}},
 
 Saw {{street}} came down to {{newListPrice}}.
 
-Our offer at {{offerPrice}} is still good, and it's cash with no financing or appraisal contingency — so it closes in {{closingDays}} days regardless of what an appraiser thinks. If your seller has adjusted expectations, this might be a better fit than it was when I first wrote.
+Our offer at {{offerPrice}} is still good, and it's cash with no financing or appraisal contingency, so it closes in {{closingDays}} days regardless of what an appraiser thinks. If your seller has adjusted expectations, this might be a better fit than it was when I first wrote.
 
 If we're still apart, tell me where they need to be and I'll tell you straight away whether we can get there. I'd rather give you a fast no than waste your time.
 
 {{signerName}}
 {{signerTitle}} · {{buyerEntity}}{{phoneLine}}`,
+  smsBody: `{{agentFirstName}}, saw {{street}} came down to {{newListPrice}}. Our {{offerPrice}} cash offer still stands, no financing or appraisal, closes in {{closingDays}} days. Worth another look? {{signerName}}, {{buyerEntity}}. Reply STOP to opt out.`,
   answers: "Circumstances changed and your old offer is worth another look.",
 }
+
+/**
+ * Day 0 SMS companion to the letter of intent.
+ *
+ * The message William described: tell them the letter exists so it gets opened. It
+ * deliberately does NOT negotiate, restate terms or ask a question that needs a
+ * considered answer, because the email already does all three and a text that tries to
+ * do the same is just a worse email.
+ */
+export const T1_SMS = `{{agentFirstName}}, {{signerName}} with {{buyerEntity}}, a Tampa Bay homebuying company. Just emailed you a written cash offer on {{street}} at {{offerPrice}}, {{closingDays}}-day close. Sending this so it doesn't sit in spam. Reply STOP to opt out.`
 
 export const SEQUENCE: TouchTemplate[] = [T2, T3, T4]
 export const EVENT_TOUCHES: TouchTemplate[] = [T5]
 
 /** Subject-line variants for the LOI itself — the only touch with enough volume to test. */
 export const LOI_SUBJECT_VARIANTS: Record<string, string> = {
-  "v1-plain":   "Cash offer — {{street}}, {{city}} (MLS# {{listingId}})",
-  "v2-terms":   "{{offerPrice}} cash, {{closingDays}}-day close — {{street}}",
+  "v1-plain":   "Cash offer: {{street}}, {{city}} (MLS# {{listingId}})",
+  "v2-terms":   "{{offerPrice}} cash, {{closingDays}}-day close on {{street}}",
   "v3-question": "Is your seller on {{street}} open to a cash offer?",
 }
 

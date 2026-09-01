@@ -63,8 +63,11 @@ const getClient = (): Anthropic => (client ??= new Anthropic())
 export function handoffLine(alreadyIntroduced: boolean): string | null {
   const cfg = acquisitionConfig
   if (alreadyIntroduced || !cfg.acquisitionsName) return null
-  const phone = cfg.acquisitionsPhone ? ` (${cfg.acquisitionsPhone})` : ""
-  return `Putting you with ${cfg.acquisitionsName}${phone}, our ${cfg.acquisitionsTitle.toLowerCase()} \u2014 they handle the diligence and paperwork from here and can move faster than I can.`
+  // The configured number may already carry its own parens, so wrap with a comma
+  // rather than nesting brackets: "Jacob Wright ((813) 590-1157)" is a rendering bug
+  // the recipient sees.
+  const phone = cfg.acquisitionsPhone ? `, ${cfg.acquisitionsPhone}` : ""
+  return `Putting you with ${cfg.acquisitionsName}${phone}. They're our ${cfg.acquisitionsTitle.toLowerCase()} and handle the diligence and paperwork from here, and they can move faster than I can.`
 }
 
 export type DraftInput = {
