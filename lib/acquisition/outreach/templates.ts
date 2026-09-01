@@ -51,9 +51,12 @@ export type TouchTemplate = {
    * read cold on a phone screen gets deleted. The email is where the case lives; the
    * text exists to get it read.
    *
-   * Opt-out language appears on the FIRST message only. Carriers honour STOP whether
-   * or not it is printed, and repeating it every time is noise, but A2P campaigns get
-   * filtered when the opening message carries no disclosure at all.
+   * NO opt-out footer in any body. The sending platform appends compliance language at
+   * the account level, and hand-writing it means the recipient sees it twice, burns
+   * characters toward a second segment, and clutters the one line that has to do work.
+   * STOP is still honoured: channel.ts matches it deterministically before any model
+   * runs, and the carrier honours it regardless. Compliance is a settings checkbox to
+   * verify, not copy to write.
    *
    * DELIVERY IS GATED. See ACQ_SMS_ENABLED in config: these are written and rendered
    * but not wired to a sender, because Florida's Telephone Solicitation Act requires
@@ -215,7 +218,7 @@ If we're still apart, tell me where they need to be and I'll tell you straight a
  * considered answer, because the email already does all three and a text that tries to
  * do the same is just a worse email.
  */
-export const T1_SMS = `{{agentFirstName}}, {{signerName}} with {{buyerEntity}}, a Tampa Bay homebuying company. Just emailed you a written cash offer on {{street}}. Sending this so it does not sit in spam. Reply STOP to opt out.`
+export const T1_SMS = `{{agentFirstName}}, {{signerName}} with {{buyerEntity}}, a Tampa Bay homebuying company. Just emailed you a written cash offer on {{street}}. Sending this so it does not sit in spam.`
 
 export const SEQUENCE: TouchTemplate[] = [T2, T3, T4]
 export const EVENT_TOUCHES: TouchTemplate[] = [T5]
