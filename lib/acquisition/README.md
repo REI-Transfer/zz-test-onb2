@@ -214,3 +214,38 @@ and the prediction/outcome ledger the calibration loop reads.
 a Stellar RESO Web API feed maps field-for-field. Any other source (MLS Grid, Bridge,
 Trestle) normalizes into that shape in its own adapter; nothing downstream of the
 adapter knows where the data came from.
+
+## Before wiring this to Elevate's GoHighLevel
+
+This module does not touch GHL. There is no client, no credential read, and no
+call that creates a contact or an opportunity; the single mention of one is a
+comment in `offer.ts` describing where a price would agree with a CRM record if
+one existed. That absence is the reason the following risk is currently
+theoretical, and it stops being theoretical the moment somebody adds the
+integration.
+
+Elevate's location carries **54 published workflows**. Several fire on a new
+opportunity or a new contact and send SMS on their own:
+
+- `New Opportunity Intro SMS` (`9dad9b25-e5be-426e-b563-4953a7ba8d11`)
+- `WF-01 Speed to Lead` (`4a56ee70-ae15-4f3a-add0-981d440d2ad7`)
+- `Email Campaigns for New Inbound lead` (`4f68d1a6-28ca-4bef-895b-18e815fcb093`)
+- `Call in Create + Update Opportunity` (`995cb94e-4453-49d7-857f-e38bfa576239`)
+
+Every one of those was written for **motivated sellers**: people in distress who
+asked for a call. The outreach targets here are **licensed listing agents** doing
+their job. Dropping an agent into that location as an opportunity would text a
+distressed-seller script to a fiduciary, from the client's own number, in a state
+where that is one complaint away from their broker and their board.
+
+So, before any GHL write:
+
+1. Read the trigger config of all 54. It is not exposed by the API and lives in a
+   Firebase blob, so this is a UI job, and the browser session for
+   `ghl-workflow-editor` has to be re-established first.
+2. Give agent opportunities their own pipeline, and confirm every seller workflow
+   is scoped to the seller pipeline or gated on a tag agents never carry.
+3. Test with one contact you control before the second one exists.
+
+An opportunity is created once and read by everything in the account. There is no
+version of this where you find out gently.
