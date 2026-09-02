@@ -1,0 +1,2407 @@
+{
+ "generatedAt": "2026-09-02T09:11:26-04:00",
+ "emailHashAlgo": "sha256(\"reit-suppression-v1:\" + lowercased address)",
+ "emailHashes": [
+  "018cfb7d667b6b2398df9ef010c84b12852f09f7cfd98b6b045feab9ac953974",
+  "02532f5c8f31f0641240a2f3045951bdc33e1259edeca46965b15c77417a3ff0",
+  "056a74a660df4206fea06b1c3eb04c46540caf35de401069f6408edb5fd4eb9c",
+  "0574b3cda845a43b7fe5a7753d34bbfecc582e3bc7ac712bc7b39535f74bc2d2",
+  "07633849a89b8f0f879a82ef63660dd7fb548ec681e5e2bc2798d1eccb4f573f",
+  "091024893c419e8b9435c84f7029152fb9e814cf67de5acaa6e8a72338d4fe96",
+  "0c609d3c3a87bd05baad3275bcdd00f371c6136a5884a8b8879726038df134ea",
+  "0cbd6a2001fd145b6851dba2af795881b4cb25f9bd95e86c3aa6701c60326fb8",
+  "0eed91d3af869972e04dc782fbd6f323538ce0fd96fcd6d76db4cad8e5eb88e1",
+  "0f561616bebcfc7a3912a0c8a947bd09a46e3912741056dab677046ca927f073",
+  "0f5a90107da4e5a92526d7ef39b9564ed276a661fbd5b234ca610342c1c5060a",
+  "10fef811f93fc5db9197550c50abafd9c0ce4c70e7e66dd1d5ec0771ebc41b49",
+  "149e3fe3c0e7a44cb75f8bcc0d9273b539d31088f1df38f0d656ca8f641e8c97",
+  "16138dfe1f113ec76c6bfda446d9a5e907a87f6d2fc06d5b0b0b3df00babf944",
+  "185608d86a86c026681cf0d098beac1372fcca19fc9914972f962d38fc90ae9e",
+  "1c374314525a5c8778f1b41b977eeb868f31fe39dc849ceb1426b0c423c8c8b3",
+  "1cb9a63ea5e51722683422a82775a53675d1e995c0b8d5a941a9dbcbe05b745a",
+  "1d8af96e57c0ba3770e2bb782748b3eec66fb29ac1dfbfcfde999a7bb05f4262",
+  "1f8e04f13f49837f2fb068a0be028dd3438042605d0c11af46f163d6057bc6c6",
+  "21f9795556a579c5f6db20b574cb465cb038912575331f5d729adde59abe8d50",
+  "22494755386f730f16d2802792fbfc7086d440f906f82609a100c250d6e5dd31",
+  "22b51d2e79c145aff6238124025a58d6665b2ed5a98f9d3659ded1395a1adf27",
+  "23131b308a6e7a6dc2bf41ea537f98883aaa04936edf93ae28e51dd4e80ba8d5",
+  "249626eebe70d3051e83c35d2c93a9ef1e02fd1a9cca3f097a1f2cbdca960e16",
+  "250418a2785159aa9de9eb824eb1258677beb382d58696b34dcd3e39988e85dc",
+  "26fa44eef9f97e421646de833d5032c94bf132f224a5b214507cdac288ef4d96",
+  "274c5473266ce9e1f9483866d7e92bf1674929c1ea18434914f2709331ab53c1",
+  "28686543c6a11d145a5a35592e12aa554045ecb6e2750736616cdff737671180",
+  "28e17a6efb6544bab3aa4eb2885dc02746eb55009008ed989292167f7e5f0872",
+  "2b63192d43afb4ba5496a4d93125a29cf9372ba41fcde613e425b2c8f395949a",
+  "2ce7766e6e0036b61d3f6a20817f3179268974e2560529417edeffe693f1c191",
+  "2f46420a60670fefc1083e7b541f49a362a241ab7aedf91d5665386719ce972b",
+  "2fd36051c6d9a8772ab0ce4862d14525f984381e700feaf0cf711c414ab3bba9",
+  "323c20863c941dae5775aa81d185494a400fae28645b2c1b95507bb692a3ba95",
+  "33277a91a72274d9fbec15e35e55fcd20585908d02c8ad8df3dad5cb4e2905b7",
+  "3593317ef70af06cbbfc04f70a7e09584e849159ed97cf84598028f9f08967a1",
+  "35a53ef56b456477f574d56c6314f63919da5835f8d8e0730b8519b0f94b57c8",
+  "378baa729ec1fff14f15b68ded3ad7454cd6a3d462843f70a7ac5b749a3f6cf7",
+  "37a264ee122591855e795f431a4efccc14146c0ae349778737eb4b37b8794371",
+  "37eeb2520d2cc736dd95976490a1133a54301b427e4506ed7e1d3ee3a0a2347c",
+  "3808d7a9efcf1bed898d2f126dcaa97bbe186e1897d8cca8c9a88a7badff6909",
+  "38aad05a4a719d23df4580294f5b4c24918323d4e7cea413a2114eb4d8168ab6",
+  "39214b302b9d286b92bb2881d7012852f8d981c4f004290d1ca8cce300357ebf",
+  "3bbb771ae6024e1221e3d4e62112782952680f5363f9f809bd40432c60020bc3",
+  "3c4ec348e1f9baa3cde969b8074dd9ce07a5e55a18e4b7c00de36e2c5271f009",
+  "3cb83d29ce01bcfdc452f5cc0f850c0853af200ed93473f6fa4a51fc4d20c6da",
+  "3e5729f5a0792d8d810eea99c4e7e980cc7cbc9133ce246be77ddc887fdfccdc",
+  "3e703764d03a83e789ec5d98016adf674190387ad359a5e63a195f8ae3db86da",
+  "3eff92d8439aed3391f87abb494ab18729be727acc391186cc638678e707d9bd",
+  "3f2eccce6d0abb337f9970e25b4c004346cc5ef06fec5793fadeda019afef8d8",
+  "40369bb423cd0c9d65eaf3e1eeea87404b2fff804835c755626044dac9b733a5",
+  "408b607a8f2807686914d38593fb3ef1d7b270cfc7a6a26023b16b71ad3a5e21",
+  "41130d854683b782768c22ccba49dc7ad40432eabeaf80a09dac70eb5b68f268",
+  "41c398b20de469aaf477b294b8fef0999c13009f86f02876e01aa82ef032b435",
+  "4556d8eb475f9a5069fe2506aacf8e9f05ef59469e8931439cd71016cb23cddb",
+  "477c943a13df6542882b234a7913cba726975da2db53fb00af46ffb4e08d2995",
+  "486ab200a4f83de73260e859cbbb53c2722a410c9c892e1cc88b961eaf693fe2",
+  "4992aec68b584a25ae39682a8d9c651aa8105e204a15d65014a2640435287c19",
+  "4ad99f832c7aaccba6cc9010aac616f33a59f5b981b98bd24290d6d0158afe18",
+  "4b7cb6b8bec04c0c378caaa704479cb8b8d01b8ffb707943616c794e946e844c",
+  "4c66791605e7ef1c765f8a12a224c7d95436ed872d513044043de1c6e2b5643e",
+  "4e2b062cb8a9ff339d70556556f588919e5744e3a97482c57cabc14e93416dbe",
+  "4ee777a96f06a4e95003821504cec156b4d55656719ae0c60e36f156798aec0b",
+  "4fdc77a817ef065723b7f6bccba16e0bfb05a52fb49b9369de4de2eedb6e9ba8",
+  "52180aedd9fb44eb2c6a9cac9bff35e02d247cd5b071ad8685aba8fc83972897",
+  "54a315c1cf1f7aeab913a2b048a9c79cd67c1e6c1ecd3547dbb19e792153e7a9",
+  "54c65518939f9c2054eb9224e09b30785838db9336e527e49fd1a06b70e61022",
+  "550218f8ea9999e00cb14a1ffac1bb14c6d5fe0694de7800a91dbdb5b972a2b6",
+  "562e3f9dd71bbfd76775d602e1889a5a36a6a29c87b891fb1b7868560eca934c",
+  "5786aae896044a3ff2ad3e49c77ce527556a6d35fd94f12116a8fea89293caaf",
+  "58d9da26d2fa4cbc3706552453175f6c7b63f4dc5e9ae93a31f0ba12bf568ee5",
+  "59a8721f81ac6790e40cbc64286fc0c7b6aca40ed0806685cf2be3e9a0a8a6d0",
+  "5b1379204103efb6ddb075e91a6972d6679062ae8aa744a60a4fabfec84ba3a5",
+  "5b951bf63e07ddc4ae5e9b616fbb115e06fdd10c958c1eb11bffe79a6bf3894e",
+  "5c38655333e5ebd262c8c0d31075d021e592b0cc56c1d0cb3a14a2b0616150e1",
+  "5d1cece638b1f3e483bb231bd5d9a38a258799cb802e8e5cbe039e32536e8c27",
+  "5d8068477f2628aae1dd97d003c3e2d2ffb317a30ff3a0fa806c7c73e29a22d6",
+  "5e7d165e3347e0c7ba071d8d36ea51f4953c532087bae2b2b343a4072f3e5cec",
+  "5e99de7f5b163d28cbdf8f91d62fd6b1a8a738268b0523a57d691e1ba00d4e1e",
+  "5f6d39b3d4c20b268b6373a8d7d6aa0b6155b778f91ca20a44fa3a635d4f9453",
+  "60f65f0e34cb2451519e7c788d8ba421fdad5106193c0f219294186653281b5a",
+  "612c827515db6f6f722502e7c1cc7d84711dc57e6bc8381001d1fcc090eec4b1",
+  "62dc733e9bdfb53df467caaf3453819e4b255155703d716e9218e86f04723aaa",
+  "636a30241b35cb20e75e2b200b28494d31bcea92ea192080a0312a344b0c0c07",
+  "65259375e4fe9771743b7d583c7fc3480b92c29325c918c873e2df9cc7f8c0b0",
+  "65782dc869745940aba234c7b34de93d07a6cfc83ff3df7413b6581ba05fb45c",
+  "65e5e70936d0e804bbb586e68153523af0cb2491170f1bc3310e967e4298983a",
+  "66fd76a0a966c9b65e181a57985b9739b3b7569db6b20609ead1d53abba4c0f5",
+  "69837c96b6187d4ff6c315451345d49e66432ae87aeb10f4147fd75c0890a68f",
+  "6ba526d1fa860f55631e6724d4429ad3b85d713b68d1620a9ab9aa4a8cd3a052",
+  "6c18a392aa739b902721609e5ec08ef32ba4b9703a2d8f2d4341178abcc67fb8",
+  "6eb4dbb16c783e582e53592b484e18a0f4963bc20b218842fac4a4cbfefa468e",
+  "6ecca1ba30c7013d8f2841dfd60310f64fab130797e9d62887a3b00a20ec0999",
+  "710f2ac69e5e2480b49559e67d6df2647c90350b0ea00c49e77a0b2e0d117dcb",
+  "714c53e8fc59cb39d029b88f04562578dc63eab3a9e102996a39075a17e6c8b0",
+  "7193568a897b9b85cefe0a56eb8bd87dbe0f5975501c5c98464f96cb5eebd92c",
+  "71b0902523732c7d9c83d8cf96c612d8eb4aff4ecd5ad6e9e7cfa0ea5b85e5f0",
+  "72a93a236b4e54688b62a85aa4ce0ee064a96f260ff8da02dfa938c9d93ca122",
+  "736c0b750d9b46f900796c1c0e4a3478c3eef470330103486508be9c0abb74af",
+  "7416ca237a8adfd8fc32c51b160529c37be21a5965b9ebde7c401bba421bd113",
+  "747b410a3bb01f2b6aca7cb8d5a8d4a5ef050cf52f4753815e8f79fb228adbde",
+  "74bf1dcd37abbf36d2f612b45c2fec3f01fee182b6874eba577513514e450fe9",
+  "754e482947694900b6e8818ff2dbd13657c3ad236c7f4b14f35e78a4175b94f8",
+  "75955f2393340100a9ebd825f6f9867b684f3ee02a23eb2edb1f34cd7916b9fb",
+  "76187f37ad81f89ec25fcc9f2d17363e2fb0e03e976e4da310af09f20622089f",
+  "7741910214eec492f4e30a24bca0e6250c1528c39c8dfb3db55ef75b658b8605",
+  "7802e64ba59262eab3644f524409fc6b1df251361107d007625058fd36c09b5a",
+  "78d25f1fb94e3f5fe728241f36168c814a637cc2121c12c3f31dbe9393bfc17e",
+  "7949b7feb2ff99adaf9ab0c2911d39fa7f2f74135c86d5ee09ba35ba0a0b10bb",
+  "79d489035448198b507c91a8f48981ad3100ed1809bbd11f58b2e38218f1bd67",
+  "7a81f2058bc7d25fdad9d0b9d12788c4f1d1d3aa0888c4910e27f816a51d0226",
+  "7be5aeba68babcb9613873d600dd92814a2599afe070f9501d25d21611f68f75",
+  "7cc32c7a358ffb9f74de7a8d2050c5285281fd1395d92fadff58b33d640368de",
+  "813273eb131b14798f105a9a1354f1b44b41feae47ce622dd96d1a6cf9b37330",
+  "81a9b6eccf1236f20b1b4271d2893d6a24754e1ec0be2097093a15ebe8c6e21b",
+  "82974156c4eb8f1cfc307c2bec70d6e09146be323722a7b0a6fa27be61885bf1",
+  "841dba1a34153585dd2ee834d0fe936b4e8be393f78d893d5c82cd27336ca30e",
+  "86892bfc02163b6e5aaf33af64f08d6dfe7db71f96931ef123091c2d80190aa0",
+  "869800510ed1510a0848ced1679438ee64aaac6b20ec89768a689d849e5e9fe6",
+  "86f8909b9678bd746a50d44f53e4633856acaab3afa91afbe3eb95f967a0fc28",
+  "886ba2e0c2cdaa2fb2f3648e6a4a95236501dc658f266a4ecb999d5232effd8b",
+  "886d17d898a16637d4ad7487b143aec3e1e511a48f75ea978add243e8642d580",
+  "88fabfaa45b7914b45b9a8ef1b8a69ba3ac600b81613ea2f003cc56da1c7ff02",
+  "8f096eca9a91a299bd15157ef178ae788642c2501854985b5149823cb3d13c44",
+  "904e6a5b911a25decfe8134991dd921db4ff7e2e95a0b2b5d14f0e2362d02f3a",
+  "908cfb1582da7581c9e28d4d0fe843b904369325ce972abe93d70111d41e13ba",
+  "920d486f6d2c86d0fbb54d348788b46b46d78121d57420eca9fc1260a3a3340a",
+  "924cb2df20a355eff30c01a5b30c1cf14da65081e9e07d25ec4523972dcc645d",
+  "92f275f9d1d4f2dae35c1e13249a3f33b259c397093f3789b588b150ed9eece1",
+  "931891670efd6424cab12fa48865227bf395e2702d83302c21a43663b3000616",
+  "932130a027f1a0409adf088e83dae8d847e0c5c7a6afddf91d29b1c5313306da",
+  "9b49d5b5a47a1b1ceaf698a0657d4f9507260ee5e997d4ffb06a12312e9562bf",
+  "9ea521aaf68e74be085decf35bdbab638bc0799e5e1ac4eb07c1a64fe8127c60",
+  "9efd0040e9ee64a10b078dc26126ce4cb5a2e252de14a9fc51afbb15de7f2634",
+  "a0193e7c09f967fee67f5607e5c9632d2e1120ddf783351c89871a9de61dc52c",
+  "a062892c671c49b145954a924e2baeb93d284835215d99abb3a3694600a75049",
+  "a264f348e78688d4f88ec170e4e33c25a738032b6922f3a8c853ddda8fe2e40b",
+  "a3999b4acd563f498aa5f3fb53b980150a128f275de7c019b3f713bc0546ec26",
+  "a55e538395143821fe6d8751af17fa9eac5cc6200776836c0960501d750641f7",
+  "a60dca78e8bae1d17b2b7e07f36e981ee5ccc2ad83ebfa0473d4c2f2a6c51730",
+  "a6a3b241835e96a7102043f589118fb1224b71da9f3dd00758702114ab6d5893",
+  "a7088a59cb4c0996a1858831fa1dad2a66f7091bdd78f51bf6c77267bebe8d10",
+  "a84fcb0194d6bb91431aae0c9ea6882e12102f87a12a9997d8e52da0a8cff8f0",
+  "aa445c2ff117c94bc936505d621ff6a1a0a651b7308a16143bbfd900daf59bcb",
+  "aa6f21b35983f665edb31c2027d1d8a043a559549824955151cc4c95fe339a78",
+  "ac6bcf3c5f8a45d6d9a9b43c9be99e930a377529cfc763445920681f87734666",
+  "af223c21b24d9000ea4219d3cafb28337bef7982c3b79c0b7c40820541210341",
+  "b011e2f727f302453817e34d70554f27199d0f6d36ecc41edff67a7610ae1d19",
+  "b0eb27a57c9f3f63f6348bba39847a5d528385a8fdc3ec3f20ab4f3bd7af7863",
+  "b502da32174a5d176c727a1f3e14b07ca72ed70c85d216051dfce600844c45b7",
+  "b80dd260cf26866f6c4f487099db45335651a51a9b944b1d6898db612a3a785d",
+  "bbbfe9a143d461b2910c5591f273a4c2c2187f3a200c3691866dea4c231da260",
+  "bd48aeb00f392c97ce1ba67531d62ac06e84fca82d6240ad4065ca900d96519e",
+  "bd91cd3e723eee47f65fe3bf0ea2143756fbdfa227f9dc385c8fa9e2921f13be",
+  "be6d674d65a1271a88ec2ab5f16674b595617a796dcec3c1a5a0b7d373519ebd",
+  "c67843229a2c761a841c2a6778d5c5ac6a5ca3db229113b77dc455649aa00437",
+  "c6ae3307dd4e02d5ff68131185701e162fbffc2558f851ea4983180432c36301",
+  "c9f5a2789a831df6e6686e7d973515a7b05e9a02da19acaf881b6cc0e541f9a3",
+  "cafb7be0c7b1e4c62dde4d844ca514e60ebd0eb1ce5b579362684b1c4b255968",
+  "cd12b08011dd475bd223fae6b503c13041992fbc71890ce3eb5fd5fd8b3362e5",
+  "cd5abbb1496768dc193f51128d08571186897225be40509e20c077ebf56c1c51",
+  "cec05c5971c706b2279e0261aacbca91567a43ba432d904831ae69426efea23e",
+  "d185fddead6134fb8aa6d6dd068294ba93b1369daeb3140829bf63c849468e1f",
+  "d30bfbeb091da38b0f1f766286c0064c1b0d57f779290c98649d346488c5dc08",
+  "d318abe18cfa55824513dcd4679b408b8f939ff7853d9524d067d173a84144b8",
+  "d4d40f506732ec93555a1fd8127cbf9b273d7ae4bd6e209abf4b263f469076f9",
+  "da831d0504c9b0e2b7e4f5ab5d5dd5cf17527ae6bedd7d44abbc1653a1999be1",
+  "e02cb7302910927a92ebae5162f8df8104adbf22aa99e7ca1d81a3f81fcd6293",
+  "e19025f646a5106c77e9c9c1fc3ce6bb1dd2b71dd45acdf889692f96d3598b15",
+  "e1de55ea206f5a0299254cf90a14b0e8e6550e4aff55ab2bf47b3144d488efee",
+  "e1f80959333bca8ffa6f1312217be65267dcce3a4dbaef88b78c1d9803a7738a",
+  "e350909bbe0b0b17abcddd10e27ce783f915ac7ca4aad65bcebb6ffba005a869",
+  "e49068e1e8fa83fc1877b1ad8e2402ab63b86760650757ad9d242e0df9695390",
+  "e5cf1450fa830e31faaf11c0129655a9946af871de7e32ad137cba8b3a984d24",
+  "e9569f20c35a0fdbea70e276269f59e61dde4eb3e4d566101929111ec9640e2b",
+  "ea2bf7e3afa299f93ff480d353fc4ff3139b593bf9fe57dad91cf04819705320",
+  "eaef33746adc7ec33721a6a8c43fa3c933c4b8bea5afc680ede90e95009170ea",
+  "eb8325156035ef6c10b63911b25c91a394bf658b54f4caf6307113c686a3ee1f",
+  "eb9fb6e3dc35f186a0399971fa86703991c0382eb7b11bea48b8a7a04099c4da",
+  "ecdd2189ad05bfb23849f1985246acbf860caa7a9b2d3f9aa113e310b9a29b32",
+  "ed7315a4cc6b0e9d1e9f2955cd30b6f64c903273d3c34dde1597eaec32758d0a",
+  "f020198197c968bd41ecaee36ec508d0e5d60babbb425488e3ba97bbbe5ae689",
+  "f1c7d4ce2223eddcd0c8897a72f504de92a78bfdb317aa9cbe04534bd6d2f516",
+  "f208113f355976e1f69c428af3b2d5c7f03288f033cb767c5aba4cb75693d9d9",
+  "f3097f074d459f7bd3fd2209773f235e02cf8e6fb857dcaae166520a0d137b79",
+  "f396d7d6c7e1d6fc107f740e967b1ae0f213ba3bc0965e0ecbb86b6b23858d75",
+  "f3c150e32475f55a8e15651aeb982e3e7452d1a77909b3e156c7098a44591470",
+  "f4ffee9b5dc555862556602ed7ba6e816c7326510862b3f3c9c7cbdf8dd1e401",
+  "f5155e035f37787559e90172e4c971606aca97d221097c27a878b09c6eabb464",
+  "f6257d7ca96d6e71f39531f323872e8705bf273d78ab0302d7d28d13ef1b984a",
+  "f750c814e205bbebe6eaee432354458eeaad620f5baa8f1941af03c8e7483d24",
+  "f7711bfd07faa8468ac6ca7ae4c68e9f5653013dd5018fdf7dd60e4fa506ef59",
+  "f849cee236a965616cc6248b61d33d9393c38a6aae037dad7eb635f774322816",
+  "f8db5b58d2c9306bafb2ffac79712284f48555cd6497f1456845422a693f0320",
+  "f92cb6502c5d1bc560aafe97c3039ca98f35ae061cb83404fe75d542ab67afa7",
+  "f939849f9ecd66852b21ae40abcb54d248279c8477022d0790da0dd5e2727b45",
+  "f9910ee199af78a1b00b79c5a896e48320f8a10fc2de6aa211621708ec82eba5",
+  "fabcbe2eea7b4274acc1fcd98da3601d16fd22774f1dcc03e132ef5660ff48fe",
+  "facba100f282a28167b20c1ecfc2fbfacccc46bf8ba9ac70cfce64aaf88c636d",
+  "fc0a82cf8ef0f5f5834d09273994f71bc77d6c0d94e2a7dc3f66e996e5b668ec",
+  "fe224d72ee17f3756872c96f25ce94e6f93e6542a70142339d6027b0eec7091b",
+  "fea9ef0ea8902aee39f90eced03048ac6cea12fde344bd3417c7931a7e2a72d8"
+ ],
+ "domains": [
+  "11brei.com",
+  "1800buyhouses.com",
+  "5boroughsassets.com",
+  "606homebuyers.com",
+  "60mincashoffer.com",
+  "americanhomeadvisors.us",
+  "apolloasset.com",
+  "asphomebuyers.com",
+  "avenousolutions.com",
+  "bobbybuyshomes.com",
+  "bulldoghomebuyers.com",
+  "calugaru.org",
+  "cashforkeysoffer.com",
+  "clearedgeproperties.com",
+  "codenamehq.com",
+  "condegroupe.com",
+  "creativehomeventures.com",
+  "crosscountryhomebuyers.com",
+  "crownedlegacyrealty.com",
+  "crspropertysolutions.com",
+  "custodiaproperties.com",
+  "deepsouthhomebuyers.com",
+  "ecomleads.com",
+  "elevategrouprei.com",
+  "epitomeresolutions.com",
+  "estatepilot.co.uk",
+  "expresshomebuyers.com",
+  "ezrealestateplatform.com",
+  "falconroofing.solar",
+  "geelyfe.com",
+  "goleadrocket.com",
+  "greenlightoffer.com",
+  "homebridgebuyers.com",
+  "homesforcashguys.com",
+  "homkeys.com",
+  "housebuyerdan.com",
+  "hsnnow.com",
+  "hummelgroupatl.com",
+  "hundrdhomes.com",
+  "ibuykc.com",
+  "insrealtygroup.com",
+  "jencoronado.com",
+  "jenkinshomebuyers.com",
+  "joehomebuyer.com",
+  "karmahomesolutions.com",
+  "key2homeoptions.com",
+  "kindacquisition.com",
+  "kristibuyshouses.com",
+  "legacyoffer.com",
+  "masonri.com",
+  "mbbrproperties.com",
+  "mgpropertybros.com",
+  "mx.group",
+  "myhomeoptions.ca",
+  "nestvestors.com",
+  "newdayproperties.com",
+  "newsouthps.com",
+  "nickmanfredi.com",
+  "noremacmanagement.com",
+  "nsegmd.com",
+  "nutrendsolutions.com",
+  "ochomebuyers.com",
+  "omaralfaro.com",
+  "philvaughan.net",
+  "propertyhomebuyers.net",
+  "propertymerchants.com",
+  "propstor.com",
+  "realestaterenet.com",
+  "redhomes.org",
+  "redlinehomesavers.com",
+  "reitransfer.com",
+  "resultshomebuyers.com",
+  "rhflproperties.com",
+  "ronin-property.com",
+  "roofsonlyfl.com",
+  "royallestates.com",
+  "selltowaypoint.com",
+  "simpleebuys.com",
+  "smithrealtyinnovations.com",
+  "societyinvestmentsga.com",
+  "soldave.com",
+  "sotahomebuyers.com",
+  "specgenie.com",
+  "speedysalebuyers.com",
+  "stonybrookproperty.com",
+  "sunbelthomeoffers.com",
+  "suncoastcashoffer.com",
+  "tarerealestate.com",
+  "theezoffer.com",
+  "therealestateprogroupllc.com",
+  "tphomebuyer.com",
+  "tramhomes.com",
+  "ultrainvestmentgroup.com",
+  "unitedhomebuyers.com",
+  "virtusinvestmentgroup.com",
+  "vprealtygroupga.com",
+  "vroommediagroup.com",
+  "webuyhouses.com",
+  "yuvamed.co"
+ ],
+ "brands": [
+  {
+   "display": "11brei",
+   "tokens": [
+    "11brei"
+   ],
+   "sources": [
+    "whop-domain:11brei.com"
+   ]
+  },
+  {
+   "display": "1800 buys houses san diego",
+   "tokens": [
+    "1800",
+    "san"
+   ],
+   "sources": [
+    "folder:1800-buys-houses-san-diego"
+   ]
+  },
+  {
+   "display": "1800 buys houses slc",
+   "tokens": [
+    "1800",
+    "slc"
+   ],
+   "sources": [
+    "folder:1800-buys-houses-slc"
+   ]
+  },
+  {
+   "display": "1800buy houses",
+   "tokens": [
+    "1800buy"
+   ],
+   "sources": [
+    "whop-domain:1800buyhouses.com"
+   ]
+  },
+  {
+   "display": "1800buyhouses",
+   "tokens": [
+    "1800buyhouses"
+   ],
+   "sources": [
+    "folder:1800buyhouses-book-funnel"
+   ]
+  },
+  {
+   "display": "3 step",
+   "tokens": [
+    "step"
+   ],
+   "sources": [
+    "folder:3-step",
+    "folder:3-step-home-sale-ads",
+    "folder:3-step-home-sale-v2-survey 2",
+    "folder:3-step-properties"
+   ]
+  },
+  {
+   "display": "5boroughs assets",
+   "tokens": [
+    "5boroughs"
+   ],
+   "sources": [
+    "whop-domain:5boroughsassets.com"
+   ]
+  },
+  {
+   "display": "60 minute cash offer",
+   "tokens": [
+    "minute"
+   ],
+   "sources": [
+    "folder:60-minute-cash-offer"
+   ]
+  },
+  {
+   "display": "606home buyers",
+   "tokens": [
+    "606home"
+   ],
+   "sources": [
+    "whop-domain:606homebuyers.com"
+   ]
+  },
+  {
+   "display": "60min cash offer",
+   "tokens": [
+    "60min"
+   ],
+   "sources": [
+    "whop-domain:60mincashoffer.com"
+   ]
+  },
+  {
+   "display": "Green pro",
+   "tokens": [
+    "green"
+   ],
+   "sources": [
+    "folder:Green-pro",
+    "folder:Home Pro Green"
+   ]
+  },
+  {
+   "display": "Jordan Rivera",
+   "tokens": [
+    "jordan",
+    "rivera"
+   ],
+   "sources": [
+    "folder:Jordan Rivera"
+   ]
+  },
+  {
+   "display": "Luke SEO ",
+   "tokens": [
+    "luke",
+    "seo"
+   ],
+   "sources": [
+    "folder:Luke SEO "
+   ]
+  },
+  {
+   "display": "Luke Sprint   For Christian",
+   "tokens": [
+    "luke",
+    "sprint",
+    "christian"
+   ],
+   "sources": [
+    "folder:Luke Sprint - For Christian"
+   ]
+  },
+  {
+   "display": "Mason Solution NY",
+   "tokens": [
+    "mason"
+   ],
+   "sources": [
+    "folder:Mason-Solution-NY",
+    "folder:mason-solution",
+    "folder:mason-solutions-survey"
+   ]
+  },
+  {
+   "display": "Master Survey Page ",
+   "tokens": [
+    "master",
+    "page"
+   ],
+   "sources": [
+    "folder:Master-Survey-Page-",
+    "folder:master-survey-page",
+    "folder:master-survey-page-fix"
+   ]
+  },
+  {
+   "display": "Medix Staff Avatar Pics",
+   "tokens": [
+    "medix",
+    "staff",
+    "avatar",
+    "pics"
+   ],
+   "sources": [
+    "folder:Medix Staff Avatar Pics"
+   ]
+  },
+  {
+   "display": "Medix Staff Pics of Docs",
+   "tokens": [
+    "medix",
+    "staff",
+    "pics",
+    "docs"
+   ],
+   "sources": [
+    "folder:Medix Staff Pics of Docs"
+   ]
+  },
+  {
+   "display": "New Day",
+   "tokens": [
+    "day"
+   ],
+   "sources": [
+    "folder:New Day",
+    "folder:new-day-properties"
+   ]
+  },
+  {
+   "display": "Next Stage",
+   "tokens": [
+    "next",
+    "stage"
+   ],
+   "sources": [
+    "folder:Next Stage",
+    "folder:next-stage-home-solutions",
+    "folder:next-stage-homes"
+   ]
+  },
+  {
+   "display": "Paul Baird",
+   "tokens": [
+    "paul",
+    "baird"
+   ],
+   "sources": [
+    "folder:Paul Baird",
+    "folder:paul-baird-presentation",
+    "folder:paul-baird-webinar"
+   ]
+  },
+  {
+   "display": "Paul Baird Webinar 8t",
+   "tokens": [
+    "paul",
+    "baird",
+    "webinar"
+   ],
+   "sources": [
+    "folder:Paul-Baird-Webinar-8t"
+   ]
+  },
+  {
+   "display": "REI Transfer",
+   "tokens": [
+    "transfer"
+   ],
+   "sources": [
+    "folder:REI-Transfer"
+   ]
+  },
+  {
+   "display": "Steadfast Home Buyers",
+   "tokens": [
+    "steadfast"
+   ],
+   "sources": [
+    "folder:Steadfast-Home-Buyers",
+    "folder:steadfast-home-buyers-ads"
+   ]
+  },
+  {
+   "display": "Tim Storey",
+   "tokens": [
+    "tim",
+    "storey"
+   ],
+   "sources": [
+    "folder:Tim-Storey"
+   ]
+  },
+  {
+   "display": "William admin",
+   "tokens": [
+    "william",
+    "admin"
+   ],
+   "sources": [
+    "folder:William-admin"
+   ]
+  },
+  {
+   "display": "absolve properties",
+   "tokens": [
+    "absolve"
+   ],
+   "sources": [
+    "folder:absolve-properties"
+   ]
+  },
+  {
+   "display": "acquisition com",
+   "tokens": [
+    "acquisition",
+    "com"
+   ],
+   "sources": [
+    "folder:acquisition-com"
+   ]
+  },
+  {
+   "display": "acre property",
+   "tokens": [
+    "acre"
+   ],
+   "sources": [
+    "folder:acre-property",
+    "folder:acre-property-solutions"
+   ]
+  },
+  {
+   "display": "advertorial landing pages",
+   "tokens": [
+    "advertorial",
+    "landing",
+    "pages"
+   ],
+   "sources": [
+    "folder:advertorial-landing-pages"
+   ]
+  },
+  {
+   "display": "american homeadvisors",
+   "tokens": [
+    "homeadvisors"
+   ],
+   "sources": [
+    "whop-domain:americanhomeadvisors.us"
+   ]
+  },
+  {
+   "display": "apollo asset",
+   "tokens": [
+    "apollo"
+   ],
+   "sources": [
+    "whop-domain:apolloasset.com"
+   ]
+  },
+  {
+   "display": "as is housebuyers",
+   "tokens": [
+    "housebuyers"
+   ],
+   "sources": [
+    "folder:as-is-housebuyers"
+   ]
+  },
+  {
+   "display": "asp home buyers",
+   "tokens": [
+    "asp"
+   ],
+   "sources": [
+    "whop-domain:asphomebuyers.com"
+   ]
+  },
+  {
+   "display": "avenou solutions",
+   "tokens": [
+    "avenou"
+   ],
+   "sources": [
+    "whop-domain:avenousolutions.com"
+   ]
+  },
+  {
+   "display": "bobby buys homes",
+   "tokens": [
+    "bobby"
+   ],
+   "sources": [
+    "whop-domain:bobbybuyshomes.com",
+    "folder:bobby-buys-homes"
+   ]
+  },
+  {
+   "display": "boyce property group",
+   "tokens": [
+    "boyce"
+   ],
+   "sources": [
+    "folder:boyce-property-group"
+   ]
+  },
+  {
+   "display": "brightpath homebuyers",
+   "tokens": [
+    "brightpath",
+    "homebuyers"
+   ],
+   "sources": [
+    "folder:brightpath-homebuyers"
+   ]
+  },
+  {
+   "display": "bulldog home buyers",
+   "tokens": [
+    "bulldog"
+   ],
+   "sources": [
+    "whop-domain:bulldoghomebuyers.com"
+   ]
+  },
+  {
+   "display": "calugaru",
+   "tokens": [
+    "calugaru"
+   ],
+   "sources": [
+    "whop-domain:calugaru.org"
+   ]
+  },
+  {
+   "display": "campaigns",
+   "tokens": [
+    "campaigns"
+   ],
+   "sources": [
+    "folder:campaigns"
+   ]
+  },
+  {
+   "display": "cani properties",
+   "tokens": [
+    "cani"
+   ],
+   "sources": [
+    "folder:cani-properties"
+   ]
+  },
+  {
+   "display": "cash for keys offer",
+   "tokens": [
+    "keys"
+   ],
+   "sources": [
+    "folder:cash-for-keys-offer-survey"
+   ]
+  },
+  {
+   "display": "cashforkeys offer",
+   "tokens": [
+    "cashforkeys"
+   ],
+   "sources": [
+    "whop-domain:cashforkeysoffer.com"
+   ]
+  },
+  {
+   "display": "citi atlas",
+   "tokens": [
+    "citi",
+    "atlas"
+   ],
+   "sources": [
+    "folder:citi-atlas"
+   ]
+  },
+  {
+   "display": "clearedge properties",
+   "tokens": [
+    "clearedge"
+   ],
+   "sources": [
+    "whop-domain:clearedgeproperties.com"
+   ]
+  },
+  {
+   "display": "codenamehq",
+   "tokens": [
+    "codenamehq"
+   ],
+   "sources": [
+    "whop-domain:codenamehq.com"
+   ]
+  },
+  {
+   "display": "conde groupe",
+   "tokens": [
+    "conde",
+    "groupe"
+   ],
+   "sources": [
+    "whop-domain:condegroupe.com"
+   ]
+  },
+  {
+   "display": "creative homeventures",
+   "tokens": [
+    "creative",
+    "homeventures"
+   ],
+   "sources": [
+    "whop-domain:creativehomeventures.com"
+   ]
+  },
+  {
+   "display": "crosscountry home buyers",
+   "tokens": [
+    "crosscountry"
+   ],
+   "sources": [
+    "whop-domain:crosscountryhomebuyers.com"
+   ]
+  },
+  {
+   "display": "crown legacy estates",
+   "tokens": [
+    "crown",
+    "legacy",
+    "estates"
+   ],
+   "sources": [
+    "folder:crown-legacy-estates"
+   ]
+  },
+  {
+   "display": "crowned legacy realty",
+   "tokens": [
+    "crowned",
+    "legacy"
+   ],
+   "sources": [
+    "whop-domain:crownedlegacyrealty.com",
+    "folder:crowned-legacy-survey"
+   ]
+  },
+  {
+   "display": "crs property solutions",
+   "tokens": [
+    "crs"
+   ],
+   "sources": [
+    "whop-domain:crspropertysolutions.com"
+   ]
+  },
+  {
+   "display": "custodia properties",
+   "tokens": [
+    "custodia"
+   ],
+   "sources": [
+    "whop-domain:custodiaproperties.com"
+   ]
+  },
+  {
+   "display": "deep south homebuyers",
+   "tokens": [
+    "deep",
+    "homebuyers"
+   ],
+   "sources": [
+    "folder:deep-south-homebuyers",
+    "folder:deep-south-homebuyers-survey"
+   ]
+  },
+  {
+   "display": "deepsouth home buyers",
+   "tokens": [
+    "deepsouth"
+   ],
+   "sources": [
+    "whop-domain:deepsouthhomebuyers.com"
+   ]
+  },
+  {
+   "display": "direct buyer san diego",
+   "tokens": [
+    "san"
+   ],
+   "sources": [
+    "folder:direct-buyer-san-diego"
+   ]
+  },
+  {
+   "display": "ecomleads",
+   "tokens": [
+    "ecomleads"
+   ],
+   "sources": [
+    "whop-domain:ecomleads.com"
+   ]
+  },
+  {
+   "display": "elevate grouprei",
+   "tokens": [
+    "elevate",
+    "grouprei"
+   ],
+   "sources": [
+    "whop-domain:elevategrouprei.com"
+   ]
+  },
+  {
+   "display": "elevate home buyer",
+   "tokens": [
+    "elevate"
+   ],
+   "sources": [
+    "folder:elevate-home-buyer",
+    "folder:elevate-home-buyer-ads",
+    "folder:elevate-home-buyers",
+    "folder:elevate-home-offers",
+    "folder:elevate-home-offers-live",
+    "folder:elevate-tampa"
+   ]
+  },
+  {
+   "display": "epitomere solutions",
+   "tokens": [
+    "epitomere"
+   ],
+   "sources": [
+    "whop-domain:epitomeresolutions.com"
+   ]
+  },
+  {
+   "display": "estatepilot",
+   "tokens": [
+    "estatepilot"
+   ],
+   "sources": [
+    "whop-domain:estatepilot.co.uk"
+   ]
+  },
+  {
+   "display": "express home buyers",
+   "tokens": [
+    "express"
+   ],
+   "sources": [
+    "whop-domain:expresshomebuyers.com",
+    "folder:express-home-offers-ads"
+   ]
+  },
+  {
+   "display": "express homebuyer",
+   "tokens": [
+    "express",
+    "homebuyer"
+   ],
+   "sources": [
+    "folder:express-homebuyer-survey"
+   ]
+  },
+  {
+   "display": "express homebuyers",
+   "tokens": [
+    "express",
+    "homebuyers"
+   ],
+   "sources": [
+    "folder:express-homebuyers-nextjs"
+   ]
+  },
+  {
+   "display": "express homebuyers dmv",
+   "tokens": [
+    "express",
+    "homebuyers",
+    "dmv"
+   ],
+   "sources": [
+    "folder:express-homebuyers-dmv"
+   ]
+  },
+  {
+   "display": "ez real estateplatform",
+   "tokens": [
+    "estateplatform"
+   ],
+   "sources": [
+    "whop-domain:ezrealestateplatform.com"
+   ]
+  },
+  {
+   "display": "ezoffer",
+   "tokens": [
+    "ezoffer"
+   ],
+   "sources": [
+    "folder:ezoffer"
+   ]
+  },
+  {
+   "display": "falcon roofing and solar",
+   "tokens": [
+    "falcon",
+    "roofing",
+    "solar"
+   ],
+   "sources": [
+    "folder:falcon-roofing-and-solar"
+   ]
+  },
+  {
+   "display": "falconroofing",
+   "tokens": [
+    "falconroofing"
+   ],
+   "sources": [
+    "whop-domain:falconroofing.solar"
+   ]
+  },
+  {
+   "display": "find re",
+   "tokens": [
+    "find"
+   ],
+   "sources": [
+    "folder:find-re-clone"
+   ]
+  },
+  {
+   "display": "geelyfe",
+   "tokens": [
+    "geelyfe"
+   ],
+   "sources": [
+    "whop-domain:geelyfe.com"
+   ]
+  },
+  {
+   "display": "ghs investment group",
+   "tokens": [
+    "ghs"
+   ],
+   "sources": [
+    "folder:ghs-investment-group-survey"
+   ]
+  },
+  {
+   "display": "godutch homebuyers",
+   "tokens": [
+    "godutch",
+    "homebuyers"
+   ],
+   "sources": [
+    "folder:godutch-homebuyers",
+    "folder:godutch-homebuyers-ads"
+   ]
+  },
+  {
+   "display": "goleadrocket",
+   "tokens": [
+    "goleadrocket"
+   ],
+   "sources": [
+    "whop-domain:goleadrocket.com"
+   ]
+  },
+  {
+   "display": "greenlight offer",
+   "tokens": [
+    "greenlight"
+   ],
+   "sources": [
+    "whop-domain:greenlightoffer.com"
+   ]
+  },
+  {
+   "display": "helpful homebuyer li",
+   "tokens": [
+    "helpful",
+    "homebuyer"
+   ],
+   "sources": [
+    "folder:helpful-homebuyer-li-pixel-swap"
+   ]
+  },
+  {
+   "display": "helpful homebuyers li",
+   "tokens": [
+    "helpful",
+    "homebuyers"
+   ],
+   "sources": [
+    "folder:helpful-homebuyers-li-ads"
+   ]
+  },
+  {
+   "display": "hidden gem",
+   "tokens": [
+    "hidden",
+    "gem"
+   ],
+   "sources": [
+    "folder:hidden-gem-ads"
+   ]
+  },
+  {
+   "display": "homebridge buyers",
+   "tokens": [
+    "homebridge"
+   ],
+   "sources": [
+    "whop-domain:homebridgebuyers.com"
+   ]
+  },
+  {
+   "display": "homekeys",
+   "tokens": [
+    "homekeys"
+   ],
+   "sources": [
+    "folder:homekeys-survey"
+   ]
+  },
+  {
+   "display": "homesfor cashguys",
+   "tokens": [
+    "homesfor",
+    "cashguys"
+   ],
+   "sources": [
+    "whop-domain:homesforcashguys.com"
+   ]
+  },
+  {
+   "display": "homkeys",
+   "tokens": [
+    "homkeys"
+   ],
+   "sources": [
+    "whop-domain:homkeys.com"
+   ]
+  },
+  {
+   "display": "house buyer dan",
+   "tokens": [
+    "dan"
+   ],
+   "sources": [
+    "folder:house-buyer-dan-survey"
+   ]
+  },
+  {
+   "display": "house buyerdan",
+   "tokens": [
+    "buyerdan"
+   ],
+   "sources": [
+    "whop-domain:housebuyerdan.com"
+   ]
+  },
+  {
+   "display": "hsnnow",
+   "tokens": [
+    "hsnnow"
+   ],
+   "sources": [
+    "whop-domain:hsnnow.com"
+   ]
+  },
+  {
+   "display": "hummel groupatl",
+   "tokens": [
+    "hummel",
+    "groupatl"
+   ],
+   "sources": [
+    "whop-domain:hummelgroupatl.com"
+   ]
+  },
+  {
+   "display": "hundrd homes",
+   "tokens": [
+    "hundrd"
+   ],
+   "sources": [
+    "whop-domain:hundrdhomes.com",
+    "folder:hundrd-homes"
+   ]
+  },
+  {
+   "display": "i buykc",
+   "tokens": [
+    "buykc"
+   ],
+   "sources": [
+    "whop-domain:ibuykc.com"
+   ]
+  },
+  {
+   "display": "ibuykc",
+   "tokens": [
+    "ibuykc"
+   ],
+   "sources": [
+    "folder:ibuykc-survey"
+   ]
+  },
+  {
+   "display": "ibuylittlerock",
+   "tokens": [
+    "ibuylittlerock"
+   ],
+   "sources": [
+    "folder:ibuylittlerock"
+   ]
+  },
+  {
+   "display": "ibuystl",
+   "tokens": [
+    "ibuystl"
+   ],
+   "sources": [
+    "folder:ibuystl"
+   ]
+  },
+  {
+   "display": "ihomebuyer",
+   "tokens": [
+    "ihomebuyer"
+   ],
+   "sources": [
+    "folder:ihomebuyer-ads"
+   ]
+  },
+  {
+   "display": "inner city advertorial",
+   "tokens": [
+    "inner",
+    "advertorial"
+   ],
+   "sources": [
+    "folder:inner-city-advertorial"
+   ]
+  },
+  {
+   "display": "inner city home buyers",
+   "tokens": [
+    "inner"
+   ],
+   "sources": [
+    "folder:inner-city-home-buyers",
+    "folder:inner-city-home-buyers-live"
+   ]
+  },
+  {
+   "display": "inner city homebuyers",
+   "tokens": [
+    "inner",
+    "homebuyers"
+   ],
+   "sources": [
+    "folder:inner-city-homebuyers-ads"
+   ]
+  },
+  {
+   "display": "ins homebuyers",
+   "tokens": [
+    "ins",
+    "homebuyers"
+   ],
+   "sources": [
+    "folder:ins-homebuyers"
+   ]
+  },
+  {
+   "display": "ins realty group",
+   "tokens": [
+    "ins"
+   ],
+   "sources": [
+    "whop-domain:insrealtygroup.com",
+    "folder:ins-home-buyers"
+   ]
+  },
+  {
+   "display": "jamie rivoir",
+   "tokens": [
+    "jamie",
+    "rivoir"
+   ],
+   "sources": [
+    "folder:jamie-rivoir"
+   ]
+  },
+  {
+   "display": "jencoronado",
+   "tokens": [
+    "jencoronado"
+   ],
+   "sources": [
+    "whop-domain:jencoronado.com"
+   ]
+  },
+  {
+   "display": "jenkins home buyers",
+   "tokens": [
+    "jenkins"
+   ],
+   "sources": [
+    "whop-domain:jenkinshomebuyers.com"
+   ]
+  },
+  {
+   "display": "jenkins homebuyers",
+   "tokens": [
+    "jenkins",
+    "homebuyers"
+   ],
+   "sources": [
+    "folder:jenkins-homebuyers",
+    "folder:jenkins-homebuyers-ads"
+   ]
+  },
+  {
+   "display": "jerone cashforhomes",
+   "tokens": [
+    "jerone",
+    "cashforhomes"
+   ],
+   "sources": [
+    "folder:jerone-cashforhomes"
+   ]
+  },
+  {
+   "display": "joe home buyer",
+   "tokens": [
+    "joe"
+   ],
+   "sources": [
+    "whop-domain:joehomebuyer.com"
+   ]
+  },
+  {
+   "display": "joe homebuyer atlanta",
+   "tokens": [
+    "joe",
+    "homebuyer"
+   ],
+   "sources": [
+    "folder:joe-homebuyer-atlanta"
+   ]
+  },
+  {
+   "display": "kande properties",
+   "tokens": [
+    "kande"
+   ],
+   "sources": [
+    "folder:kande-properties"
+   ]
+  },
+  {
+   "display": "karma home solutions",
+   "tokens": [
+    "karma"
+   ],
+   "sources": [
+    "whop-domain:karmahomesolutions.com"
+   ]
+  },
+  {
+   "display": "key2homeoptions",
+   "tokens": [
+    "key2homeoptions"
+   ],
+   "sources": [
+    "whop-domain:key2homeoptions.com"
+   ]
+  },
+  {
+   "display": "kik home offers",
+   "tokens": [
+    "kik"
+   ],
+   "sources": [
+    "folder:kik-home-offers"
+   ]
+  },
+  {
+   "display": "kind acquisition",
+   "tokens": [
+    "kind",
+    "acquisition"
+   ],
+   "sources": [
+    "whop-domain:kindacquisition.com",
+    "folder:kind-acquisition"
+   ]
+  },
+  {
+   "display": "kristi buys houses",
+   "tokens": [
+    "kristi"
+   ],
+   "sources": [
+    "whop-domain:kristibuyshouses.com"
+   ]
+  },
+  {
+   "display": "left coast properties",
+   "tokens": [
+    "left"
+   ],
+   "sources": [
+    "folder:left-coast-properties"
+   ]
+  },
+  {
+   "display": "legacy offer",
+   "tokens": [
+    "legacy"
+   ],
+   "sources": [
+    "whop-domain:legacyoffer.com"
+   ]
+  },
+  {
+   "display": "luke rent",
+   "tokens": [
+    "luke",
+    "rent"
+   ],
+   "sources": [
+    "folder:luke-rent-website"
+   ]
+  },
+  {
+   "display": "luke vanderveer",
+   "tokens": [
+    "luke",
+    "vanderveer"
+   ],
+   "sources": [
+    "folder:luke-vanderveer"
+   ]
+  },
+  {
+   "display": "mad visionary estates",
+   "tokens": [
+    "mad",
+    "visionary",
+    "estates"
+   ],
+   "sources": [
+    "folder:mad-visionary-estates"
+   ]
+  },
+  {
+   "display": "masonri",
+   "tokens": [
+    "masonri"
+   ],
+   "sources": [
+    "whop-domain:masonri.com"
+   ]
+  },
+  {
+   "display": "matt buys houses",
+   "tokens": [
+    "matt"
+   ],
+   "sources": [
+    "folder:matt-buys-houses"
+   ]
+  },
+  {
+   "display": "max peak home solutions",
+   "tokens": [
+    "peak"
+   ],
+   "sources": [
+    "folder:max-peak-home-solutions"
+   ]
+  },
+  {
+   "display": "mbbr properties",
+   "tokens": [
+    "mbbr"
+   ],
+   "sources": [
+    "whop-domain:mbbrproperties.com"
+   ]
+  },
+  {
+   "display": "medixstaff",
+   "tokens": [
+    "medixstaff"
+   ],
+   "sources": [
+    "folder:medixstaff",
+    "folder:medixstaff-survey"
+   ]
+  },
+  {
+   "display": "mg propertybros",
+   "tokens": [
+    "propertybros"
+   ],
+   "sources": [
+    "whop-domain:mgpropertybros.com"
+   ]
+  },
+  {
+   "display": "motivated seller advertorials",
+   "tokens": [
+    "motivated",
+    "seller",
+    "advertorials"
+   ],
+   "sources": [
+    "folder:motivated-seller-advertorials"
+   ]
+  },
+  {
+   "display": "motivated seller master",
+   "tokens": [
+    "motivated",
+    "seller",
+    "master"
+   ],
+   "sources": [
+    "folder:motivated-seller-master"
+   ]
+  },
+  {
+   "display": "mvp property investments",
+   "tokens": [
+    "mvp"
+   ],
+   "sources": [
+    "folder:mvp-property-investments"
+   ]
+  },
+  {
+   "display": "my homeoptions",
+   "tokens": [
+    "homeoptions"
+   ],
+   "sources": [
+    "whop-domain:myhomeoptions.ca"
+   ]
+  },
+  {
+   "display": "nestvestors",
+   "tokens": [
+    "nestvestors"
+   ],
+   "sources": [
+    "whop-domain:nestvestors.com",
+    "folder:nestvestors"
+   ]
+  },
+  {
+   "display": "new client",
+   "tokens": [
+    "client"
+   ],
+   "sources": [
+    "folder:new-client-1"
+   ]
+  },
+  {
+   "display": "newday properties",
+   "tokens": [
+    "newday"
+   ],
+   "sources": [
+    "whop-domain:newdayproperties.com"
+   ]
+  },
+  {
+   "display": "newsouthps",
+   "tokens": [
+    "newsouthps"
+   ],
+   "sources": [
+    "whop-domain:newsouthps.com"
+   ]
+  },
+  {
+   "display": "nextstage homes",
+   "tokens": [
+    "nextstage"
+   ],
+   "sources": [
+    "folder:nextstage-homes-survey"
+   ]
+  },
+  {
+   "display": "nickmanfredi",
+   "tokens": [
+    "nickmanfredi"
+   ],
+   "sources": [
+    "whop-domain:nickmanfredi.com"
+   ]
+  },
+  {
+   "display": "noremacmanagement",
+   "tokens": [
+    "noremacmanagement"
+   ],
+   "sources": [
+    "whop-domain:noremacmanagement.com"
+   ]
+  },
+  {
+   "display": "nsegmd",
+   "tokens": [
+    "nsegmd"
+   ],
+   "sources": [
+    "whop-domain:nsegmd.com"
+   ]
+  },
+  {
+   "display": "nutrend solutions",
+   "tokens": [
+    "nutrend"
+   ],
+   "sources": [
+    "whop-domain:nutrendsolutions.com"
+   ]
+  },
+  {
+   "display": "omaralfaro",
+   "tokens": [
+    "omaralfaro"
+   ],
+   "sources": [
+    "whop-domain:omaralfaro.com"
+   ]
+  },
+  {
+   "display": "pathway homebuyers",
+   "tokens": [
+    "pathway",
+    "homebuyers"
+   ],
+   "sources": [
+    "folder:pathway-homebuyers"
+   ]
+  },
+  {
+   "display": "paul baird 1800buyhouses salt lake city",
+   "tokens": [
+    "paul",
+    "baird",
+    "1800buyhouses"
+   ],
+   "sources": [
+    "folder:paul-baird-1800buyhouses-salt-lake-city"
+   ]
+  },
+  {
+   "display": "paul baird 1800buyhouses san diego",
+   "tokens": [
+    "paul",
+    "baird",
+    "1800buyhouses",
+    "san"
+   ],
+   "sources": [
+    "folder:paul-baird-1800buyhouses-san-diego"
+   ]
+  },
+  {
+   "display": "phil buys houses fast",
+   "tokens": [
+    "phil"
+   ],
+   "sources": [
+    "folder:phil-buys-houses-fast"
+   ]
+  },
+  {
+   "display": "philvaughan",
+   "tokens": [
+    "philvaughan"
+   ],
+   "sources": [
+    "whop-domain:philvaughan.net"
+   ]
+  },
+  {
+   "display": "pre distressed system",
+   "tokens": [
+    "pre",
+    "distressed",
+    "system"
+   ],
+   "sources": [
+    "folder:pre-distressed-system"
+   ]
+  },
+  {
+   "display": "property homebuyers ca",
+   "tokens": [
+    "homebuyers"
+   ],
+   "sources": [
+    "folder:property-homebuyers-ca",
+    "folder:property-homebuyers-survey"
+   ]
+  },
+  {
+   "display": "propertymerchants",
+   "tokens": [
+    "propertymerchants"
+   ],
+   "sources": [
+    "whop-domain:propertymerchants.com"
+   ]
+  },
+  {
+   "display": "propstor",
+   "tokens": [
+    "propstor"
+   ],
+   "sources": [
+    "whop-domain:propstor.com"
+   ]
+  },
+  {
+   "display": "pure growth",
+   "tokens": [
+    "pure",
+    "growth"
+   ],
+   "sources": [
+    "folder:pure-growth-ads"
+   ]
+  },
+  {
+   "display": "quickhomeofferusa",
+   "tokens": [
+    "quickhomeofferusa"
+   ],
+   "sources": [
+    "folder:quickhomeofferusa"
+   ]
+  },
+  {
+   "display": "real estate resource network",
+   "tokens": [
+    "resource",
+    "network"
+   ],
+   "sources": [
+    "folder:real-estate-resource-network",
+    "folder:real-estate-resource-network-ads"
+   ]
+  },
+  {
+   "display": "real estaterenet",
+   "tokens": [
+    "estaterenet"
+   ],
+   "sources": [
+    "whop-domain:realestaterenet.com"
+   ]
+  },
+  {
+   "display": "red homes",
+   "tokens": [
+    "red"
+   ],
+   "sources": [
+    "whop-domain:redhomes.org"
+   ]
+  },
+  {
+   "display": "redline homesavers",
+   "tokens": [
+    "redline",
+    "homesavers"
+   ],
+   "sources": [
+    "whop-domain:redlinehomesavers.com"
+   ]
+  },
+  {
+   "display": "rei survey template",
+   "tokens": [
+    "template"
+   ],
+   "sources": [
+    "folder:rei-survey-template"
+   ]
+  },
+  {
+   "display": "reit webinar",
+   "tokens": [
+    "reit",
+    "webinar"
+   ],
+   "sources": [
+    "folder:reit-webinar-funnel"
+   ]
+  },
+  {
+   "display": "reitransfer",
+   "tokens": [
+    "reitransfer"
+   ],
+   "sources": [
+    "whop-domain:reitransfer.com"
+   ]
+  },
+  {
+   "display": "results home buyers",
+   "tokens": [
+    "results"
+   ],
+   "sources": [
+    "whop-domain:resultshomebuyers.com"
+   ]
+  },
+  {
+   "display": "rhfl properties",
+   "tokens": [
+    "rhfl"
+   ],
+   "sources": [
+    "whop-domain:rhflproperties.com"
+   ]
+  },
+  {
+   "display": "rivoir solutions",
+   "tokens": [
+    "rivoir"
+   ],
+   "sources": [
+    "folder:rivoir-solutions"
+   ]
+  },
+  {
+   "display": "ronin property",
+   "tokens": [
+    "ronin"
+   ],
+   "sources": [
+    "whop-domain:ronin-property.com",
+    "folder:ronin-property"
+   ]
+  },
+  {
+   "display": "roofsonlyfl",
+   "tokens": [
+    "roofsonlyfl"
+   ],
+   "sources": [
+    "whop-domain:roofsonlyfl.com"
+   ]
+  },
+  {
+   "display": "royall estates",
+   "tokens": [
+    "royall",
+    "estates"
+   ],
+   "sources": [
+    "whop-domain:royallestates.com"
+   ]
+  },
+  {
+   "display": "sales team resources",
+   "tokens": [
+    "resources"
+   ],
+   "sources": [
+    "folder:sales-team-resources"
+   ]
+  },
+  {
+   "display": "selltowaypoint",
+   "tokens": [
+    "selltowaypoint"
+   ],
+   "sources": [
+    "whop-domain:selltowaypoint.com"
+   ]
+  },
+  {
+   "display": "shlabu",
+   "tokens": [
+    "shlabu"
+   ],
+   "sources": [
+    "folder:shlabu-playbook"
+   ]
+  },
+  {
+   "display": "simplee buys",
+   "tokens": [
+    "simplee"
+   ],
+   "sources": [
+    "whop-domain:simpleebuys.com",
+    "folder:simplee-buys",
+    "folder:simplee-buys-survey"
+   ]
+  },
+  {
+   "display": "smith realtyinnovations",
+   "tokens": [
+    "smith",
+    "realtyinnovations"
+   ],
+   "sources": [
+    "whop-domain:smithrealtyinnovations.com"
+   ]
+  },
+  {
+   "display": "society investmentsga",
+   "tokens": [
+    "society",
+    "investmentsga"
+   ],
+   "sources": [
+    "whop-domain:societyinvestmentsga.com"
+   ]
+  },
+  {
+   "display": "soffer home improvement",
+   "tokens": [
+    "soffer",
+    "improvement"
+   ],
+   "sources": [
+    "folder:soffer-home-improvement"
+   ]
+  },
+  {
+   "display": "solar ppa dmv",
+   "tokens": [
+    "solar",
+    "ppa",
+    "dmv"
+   ],
+   "sources": [
+    "folder:solar-ppa-dmv"
+   ]
+  },
+  {
+   "display": "solar ppa miami",
+   "tokens": [
+    "solar",
+    "ppa"
+   ],
+   "sources": [
+    "folder:solar-ppa-miami"
+   ]
+  },
+  {
+   "display": "soldave",
+   "tokens": [
+    "soldave"
+   ],
+   "sources": [
+    "whop-domain:soldave.com"
+   ]
+  },
+  {
+   "display": "sota home buyers",
+   "tokens": [
+    "sota"
+   ],
+   "sources": [
+    "whop-domain:sotahomebuyers.com"
+   ]
+  },
+  {
+   "display": "spec genie",
+   "tokens": [
+    "spec",
+    "genie"
+   ],
+   "sources": [
+    "folder:spec-genie-wso"
+   ]
+  },
+  {
+   "display": "specgenie",
+   "tokens": [
+    "specgenie"
+   ],
+   "sources": [
+    "whop-domain:specgenie.com"
+   ]
+  },
+  {
+   "display": "speedy sale buyers",
+   "tokens": [
+    "speedy"
+   ],
+   "sources": [
+    "whop-domain:speedysalebuyers.com",
+    "folder:speedy-home-buyer-tampa-bay-survey",
+    "folder:speedy-simple-home-sale"
+   ]
+  },
+  {
+   "display": "stonybrook property",
+   "tokens": [
+    "stonybrook"
+   ],
+   "sources": [
+    "whop-domain:stonybrookproperty.com"
+   ]
+  },
+  {
+   "display": "swiftly bought homes",
+   "tokens": [
+    "swiftly",
+    "bought"
+   ],
+   "sources": [
+    "folder:swiftly-bought-homes"
+   ]
+  },
+  {
+   "display": "tare real estate",
+   "tokens": [
+    "tare"
+   ],
+   "sources": [
+    "whop-domain:tarerealestate.com",
+    "folder:tare-rei"
+   ]
+  },
+  {
+   "display": "the real estatepro groupllc",
+   "tokens": [
+    "estatepro",
+    "groupllc"
+   ],
+   "sources": [
+    "whop-domain:therealestateprogroupllc.com"
+   ]
+  },
+  {
+   "display": "the wink babe",
+   "tokens": [
+    "wink",
+    "babe"
+   ],
+   "sources": [
+    "folder:the-wink-babe"
+   ]
+  },
+  {
+   "display": "theez offer",
+   "tokens": [
+    "theez"
+   ],
+   "sources": [
+    "whop-domain:theezoffer.com"
+   ]
+  },
+  {
+   "display": "trailhead investments",
+   "tokens": [
+    "trailhead"
+   ],
+   "sources": [
+    "folder:trailhead-investments",
+    "folder:trailhead-survey"
+   ]
+  },
+  {
+   "display": "tram homes",
+   "tokens": [
+    "tram"
+   ],
+   "sources": [
+    "whop-domain:tramhomes.com",
+    "folder:tram-homes"
+   ]
+  },
+  {
+   "display": "tya solutions",
+   "tokens": [
+    "tya"
+   ],
+   "sources": [
+    "folder:tya-solutions"
+   ]
+  },
+  {
+   "display": "tyh solar",
+   "tokens": [
+    "tyh",
+    "solar"
+   ],
+   "sources": [
+    "folder:tyh-solar"
+   ]
+  },
+  {
+   "display": "tyh solutions",
+   "tokens": [
+    "tyh"
+   ],
+   "sources": [
+    "folder:tyh-solutions"
+   ]
+  },
+  {
+   "display": "ultra homebuyers",
+   "tokens": [
+    "ultra",
+    "homebuyers"
+   ],
+   "sources": [
+    "folder:ultra-homebuyers-survey"
+   ]
+  },
+  {
+   "display": "ultra investment group",
+   "tokens": [
+    "ultra"
+   ],
+   "sources": [
+    "whop-domain:ultrainvestmentgroup.com"
+   ]
+  },
+  {
+   "display": "ultrahomebuyers",
+   "tokens": [
+    "ultrahomebuyers"
+   ],
+   "sources": [
+    "folder:ultrahomebuyers"
+   ]
+  },
+  {
+   "display": "united home buyers",
+   "tokens": [
+    "united"
+   ],
+   "sources": [
+    "whop-domain:unitedhomebuyers.com",
+    "folder:united-home-buyers",
+    "folder:united-home-buyers-ads",
+    "folder:united-home-buyers-survey"
+   ]
+  },
+  {
+   "display": "upgrowth",
+   "tokens": [
+    "upgrowth"
+   ],
+   "sources": [
+    "folder:upgrowth"
+   ]
+  },
+  {
+   "display": "virtus investment group",
+   "tokens": [
+    "virtus"
+   ],
+   "sources": [
+    "whop-domain:virtusinvestmentgroup.com"
+   ]
+  },
+  {
+   "display": "vp realty groupga",
+   "tokens": [
+    "groupga"
+   ],
+   "sources": [
+    "whop-domain:vprealtygroupga.com"
+   ]
+  },
+  {
+   "display": "vroommedia group",
+   "tokens": [
+    "vroommedia"
+   ],
+   "sources": [
+    "whop-domain:vroommediagroup.com"
+   ]
+  },
+  {
+   "display": "waypoint properties",
+   "tokens": [
+    "waypoint"
+   ],
+   "sources": [
+    "folder:waypoint-properties"
+   ]
+  },
+  {
+   "display": "we love dallas homes",
+   "tokens": [
+    "love"
+   ],
+   "sources": [
+    "folder:we-love-dallas-homes-survey"
+   ]
+  },
+  {
+   "display": "webuyhouses abq",
+   "tokens": [
+    "webuyhouses",
+    "abq"
+   ],
+   "sources": [
+    "folder:webuyhouses-abq"
+   ]
+  },
+  {
+   "display": "yuva",
+   "tokens": [
+    "yuva"
+   ],
+   "sources": [
+    "folder:yuva-general"
+   ]
+  },
+  {
+   "display": "yuva general staffing",
+   "tokens": [
+    "yuva",
+    "general",
+    "staffing"
+   ],
+   "sources": [
+    "folder:yuva-general-staffing"
+   ]
+  },
+  {
+   "display": "yuva med",
+   "tokens": [
+    "yuva",
+    "med"
+   ],
+   "sources": [
+    "folder:yuva-med"
+   ]
+  },
+  {
+   "display": "yuva medical staffing",
+   "tokens": [
+    "yuva",
+    "medical",
+    "staffing"
+   ],
+   "sources": [
+    "folder:yuva-medical-staffing"
+   ]
+  },
+  {
+   "display": "yuvamed",
+   "tokens": [
+    "yuvamed"
+   ],
+   "sources": [
+    "whop-domain:yuvamed.co"
+   ]
+  }
+ ],
+ "generic": [
+  "ads",
+  "advisor",
+  "advisors",
+  "amazing",
+  "america",
+  "american",
+  "and",
+  "asset",
+  "assets",
+  "atlanta",
+  "bay",
+  "best",
+  "bradenton",
+  "brooksville",
+  "buy",
+  "buyer",
+  "buyers",
+  "buying",
+  "buys",
+  "capital",
+  "carolina",
+  "cash",
+  "central",
+  "city",
+  "clearwater",
+  "co",
+  "coast",
+  "companies",
+  "company",
+  "dallas",
+  "diego",
+  "direct",
+  "east",
+  "easy",
+  "estate",
+  "fast",
+  "first",
+  "florida",
+  "for",
+  "georgia",
+  "good",
+  "great",
+  "group",
+  "groups",
+  "gulf",
+  "hillsborough",
+  "holdings",
+  "home",
+  "homes",
+  "house",
+  "houses",
+  "housing",
+  "inc",
+  "investment",
+  "investments",
+  "investor",
+  "investors",
+  "jacksonville",
+  "kissimmee",
+  "lake",
+  "lakeland",
+  "live",
+  "llc",
+  "management",
+  "manatee",
+  "marion",
+  "max",
+  "maximum",
+  "miami",
+  "my",
+  "new",
+  "nextjs",
+  "north",
+  "now",
+  "ocala",
+  "of",
+  "offer",
+  "offers",
+  "one",
+  "orlando",
+  "partner",
+  "partners",
+  "pasco",
+  "pete",
+  "petersburg",
+  "pilot",
+  "pinellas",
+  "polk",
+  "pro",
+  "probe",
+  "properties",
+  "property",
+  "quick",
+  "real",
+  "realty",
+  "rei",
+  "roll",
+  "sale",
+  "sales",
+  "salt",
+  "sarasota",
+  "sell",
+  "selling",
+  "sells",
+  "service",
+  "services",
+  "simple",
+  "solution",
+  "solutions",
+  "south",
+  "src",
+  "sunbelt",
+  "suncoast",
+  "super",
+  "survey",
+  "tampa",
+  "team",
+  "texas",
+  "the",
+  "top",
+  "us",
+  "usa",
+  "venture",
+  "ventures",
+  "we",
+  "west",
+  "york"
+ ],
+ "overrides": {
+  "_comment": "Hand-adjudicated calls the derived matcher gets wrong. Reviewed 2026-09-02 against the 559-person wholesaler pull. Every entry needs a reason: a name in here with no explanation is a landmine for whoever reads this next.",
+  "block": [
+   {
+    "match": "joe homebuyer of central florida",
+    "reason": "REIT client. Joe Homebuyer is a franchise and the Atlanta franchisee is a separate client, but CFL is on the cross-account replication list, so both are ours."
+   }
+  ],
+  "allow": [
+   {
+    "match": "legacy griffin funding solutions",
+    "reason": "Matched the client 'Legacy Offer' on the single word 'legacy'. Different company, and a lender rather than a wholesaler. griffinfundingsolutions.com is not on the roster."
+   },
+   {
+    "match": "lg elevate",
+    "reason": "Matched 'Elevate Home Buyer' on the single word 'elevate'. Jacksonville wholesaler, no relation to Elevate Group REI in St Petersburg."
+   },
+   {
+    "match": "suncoast sales team",
+    "reason": "Matched 'Suncoast Cash Offer' on 'suncoast'. This one lists retail in Maryland, it is not the Florida client."
+   }
+  ]
+ }
+}

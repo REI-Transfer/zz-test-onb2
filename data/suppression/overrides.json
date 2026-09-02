@@ -1,0 +1,23 @@
+{
+  "_comment": "Hand-adjudicated calls the derived matcher gets wrong. Reviewed 2026-09-02 against the 559-person wholesaler pull. Every entry needs a reason: a name in here with no explanation is a landmine for whoever reads this next.",
+  "block": [
+    {
+      "match": "joe homebuyer of central florida",
+      "reason": "REIT client. Joe Homebuyer is a franchise and the Atlanta franchisee is a separate client, but CFL is on the cross-account replication list, so both are ours."
+    }
+  ],
+  "allow": [
+    {
+      "match": "legacy griffin funding solutions",
+      "reason": "Matched the client 'Legacy Offer' on the single word 'legacy'. Different company, and a lender rather than a wholesaler. griffinfundingsolutions.com is not on the roster."
+    },
+    {
+      "match": "lg elevate",
+      "reason": "Matched 'Elevate Home Buyer' on the single word 'elevate'. Jacksonville wholesaler, no relation to Elevate Group REI in St Petersburg."
+    },
+    {
+      "match": "suncoast sales team",
+      "reason": "Matched 'Suncoast Cash Offer' on 'suncoast'. This one lists retail in Maryland, it is not the Florida client."
+    }
+  ]
+}

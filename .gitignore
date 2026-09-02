@@ -35,3 +35,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Billing roster pulled from Whop. Client emails, not ours to version.
+data/suppression/whop-cache.json
