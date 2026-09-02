@@ -228,6 +228,26 @@ const acquisitionConfig = {
    * license number to render the disclosure paragraph into every LOI.
    */
   flLicenseNumber:  process.env.LOI_FL_LICENSE_NUMBER ?? "",
+
+  // --- The send path ---
+  /**
+   * The master switch. Off, every dispatch renders and reports but posts nothing.
+   *
+   * Default off, and it stays off until the pre-flight in scripts/dispatch-outreach.ts
+   * passes on a real batch. The failure mode this guards against is not a bad letter,
+   * it is a good letter going to four hundred licensed fiduciaries at once with a
+   * wrong number in it. There is no recall.
+   */
+  sendEnabled: process.env.ACQ_SEND_ENABLED === "true",
+  /** Instantly campaign the letters are pushed into. */
+  instantlyCampaignId: process.env.INSTANTLY_CAMPAIGN_ID ?? "",
+  /**
+   * Ceiling per run, independent of what the inbox pool could carry.
+   *
+   * The pool can move nearly two thousand a day. That is a reason to cap, not a
+   * reason to relax: the first bad batch should be small enough to apologise for.
+   */
+  sendDailyCap: num(process.env.ACQ_SEND_DAILY_CAP, 40),
 } as const
 
 export default acquisitionConfig
