@@ -4,7 +4,7 @@ Two agents, one memory, one doctrine.
 
 | Layer | File | Who reads it |
 |---|---|---|
-| Strategist (Claude) | `../CLAUDE.md` (auto-loads), `STRATEGIST_MASTER_PROMPT.md` (long form) | Claude sessions doing strategy, systems, code, reference copy |
+| Strategist (Claude) | `../CLAUDE.md` (auto-loads), `STRATEGIST_MASTER_PROMPT.md` (long form), `STRATEGIST_RESEARCH_DIRECTIVE.md` (research-and-build brief) | Claude sessions doing strategy, systems, code, reference copy |
 | Executor (Grok) | `GROK_MASTER_PROMPT.md` | Grok, as its system prompt |
 | Memory | `grok/memory/*.md` | Both. Grok writes; Claude reads and audits |
 

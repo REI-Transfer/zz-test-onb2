@@ -132,6 +132,7 @@ ai/grok/memory/EXPERIMENTS.md      hypothesis -> result log
 ai/grok/memory/ANGLES.md           shared angle and hook library (paid + search)
 ai/grok/memory/KEYWORDS.md         intent map and page-to-query ownership
 ai/grok/memory/CHANGELOG.md        amendments Grok proposed and William approved
+ai/STRATEGIST_RESEARCH_DIRECTIVE.md  research-and-build brief for the agent orchestra
 ai/README.md                       how to install, run, and evolve the system
 ```
 
