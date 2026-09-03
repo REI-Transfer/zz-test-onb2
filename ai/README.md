@@ -6,6 +6,7 @@ Two agents, one memory, one doctrine.
 |---|---|---|
 | Strategist (Claude) | `../CLAUDE.md` (auto-loads), `STRATEGIST_MASTER_PROMPT.md` (long form), `STRATEGIST_RESEARCH_DIRECTIVE.md` (research-and-build brief) | Claude sessions doing strategy, systems, code, reference copy |
 | Executor (Grok) | `GROK_MASTER_PROMPT.md` | Grok, as its system prompt |
+| Skill modules | `grok/skills/*.md` | Grok, one per command; Claude when auditing |
 | Memory | `grok/memory/*.md` | Both. Grok writes; Claude reads and audits |
 
 ## Why it is built this way
@@ -26,12 +27,27 @@ An LLM does not learn between sessions. "Self-improving" has to be engineered:
 The strategist prompt exists so Claude holds the whole machine in view, designs the
 systems, audits Grok's memory, and writes the reference examples Grok imitates.
 
+## The modules (`grok/skills/`)
+
+| Module | Owns | Invoked by |
+|---|---|---|
+| conductor | routing table, substrate decision, escalation | every command |
+| strategist | the marketing brain, ten questions, council | /brief, /ask |
+| copy-chief | personas, awareness levels, writing process, voice | /write, /critique, /angles |
+| seo-architect | intent map, architecture, local, data asset, audits | /keywords, /audit |
+| media-buyer | bid strategy, CAPI reality, testing, diagnostics, PPL lessons | /experiment, daily pass |
+| funnel-builder | formats, fit matrix, economics | /brief on new paths |
+| analyst | scorecard, joins, sample rules, scoring check, founder report | /result, /retro, /report |
+| compliance | Fair Housing, TCPA, FTC, state rules, checklist, code checks | every ship |
+| librarian | recall, record, retro, evals, amendments, Claude bridge | session start and end |
+
 ## Install into Grok (10 minutes)
 
 1. Create a Grok Project (or a persistent chat). Set the system prompt / first message to
    the full text of `GROK_MASTER_PROMPT.md`.
 2. Second message: paste `grok/memory/LEDGER.md`, `EXPERIMENTS.md`, `ANGLES.md`,
-   `KEYWORDS.md`, in that order. Fill in the "Business facts" section of the ledger
+   `KEYWORDS.md`, `SCORECARD.md`, in that order. Third message: the skill module for
+   the command you will run (or all nine). Fill in the "Business facts" section of the ledger
    first; every `[unknown]` there is a lever Grok cannot pull until it is filled.
 3. Grok must acknowledge with: the track, the three most relevant beliefs, and the
    command it is about to run. If it does not, it did not read the prompt. Re-paste.

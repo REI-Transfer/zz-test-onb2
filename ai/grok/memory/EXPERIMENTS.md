@@ -41,3 +41,30 @@ Kill rule: fewer than 200 readers per variant after 60 days is not enough sample
 Result: [unknown]
 Lesson:
 Ledger ids affected: L006, L007
+
+E004 | 2026-09-03 | B2C | planned (build, not test)
+Hypothesis: If the webhook payload carries lead_id, gclid, fbclid, fbp, fbc, UTMs and landing path, and client CRMs echo lead_id on Contacted / Appointment / Contract, then within 90 days we can publish contract rate by bucket, reason and timeline per client, because the join exists end to end.
+Variable: payload fields + CRM echo.  Control: none (instrumentation).
+Metric: percent of leads with a CRM stage returned.  Sample / duration: 90 days.
+Kill rule: if fewer than 3 clients can return stages, pool signal at agency level instead.
+Result: [unknown]
+Lesson:
+Ledger ids affected: L001, L019
+
+E005 | 2026-09-03 | B2C | planned
+Hypothesis: If eligible accounts run a custom QualifiedLead event with the raw 0-125 score as value under a value-optimizing objective (or Conversion Leads with CRM stages where volume clears ~50/week), cost per qualified lead falls 10-20% within 4 weeks after learning, because Meta currently receives the values as labels, not as an optimization signal.
+Variable: objective and event.  Control: current Leads objective campaign, same creatives.
+Metric: CPQL, percent HOT+WARM.  Sample / duration: 50+ leads per arm, 4 weeks after learning.
+Kill rule: account cannot reach ~100 valued events with 5 distinct values in 14 days; stay on Leads and revisit when volume allows.
+Result: [unknown]
+Lesson:
+Ledger ids affected: L009, L010
+
+E006 | 2026-09-03 | B2C | planned (compliance build)
+Hypothesis: Adding an env-driven TCPA consent line and consent record to the survey does not reduce survey completion by more than 5% relative, because the line appears at the final step after commitment.
+Variable: consent line.  Control: legacy form on clients not yet opted in.
+Metric: step-final completion rate.  Sample / duration: 200 completions per arm.
+Kill rule: none; the line ships regardless (legal), the test only sizes the cost.
+Result: [unknown]
+Lesson:
+Ledger ids affected: L012
