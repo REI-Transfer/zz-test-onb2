@@ -43,6 +43,10 @@ systems, audits Grok's memory, and writes the reference examples Grok imitates.
 
 ## Install into Grok (10 minutes)
 
+Fastest path: paste `GROK_BOOT.md` as the first message. It contains the master
+prompt, all memory files, the conductor module and the session-1 kickoff task, in
+order. Rebuild it with `python3 ai/build_boot.py` after any change. The manual path:
+
 1. Create a Grok Project (or a persistent chat). Set the system prompt / first message to
    the full text of `GROK_MASTER_PROMPT.md`.
 2. Second message: paste `grok/memory/LEDGER.md`, `EXPERIMENTS.md`, `ANGLES.md`,
