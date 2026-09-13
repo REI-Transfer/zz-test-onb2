@@ -72,3 +72,25 @@ number. Read those.
 
 Use the fetched transcripts for structural analysis — the point is the fingerprint,
 not the prose. Don't republish someone else's transcript text.
+
+---
+
+## If you already pay for vidIQ
+
+vidIQ covers the **discovery** half of this and not the **script** half.
+
+| Job | Use |
+|---|---|
+| Find videos beating a channel's baseline | **vidIQ Outliers** — filters on outlier score, views/hour, subs, date, length, type |
+| Keyword and SEO research | **vidIQ** |
+| Your own retention curves | **YouTube Studio** → Content → video → Engagement |
+| Competitors' transcripts | `fetch_transcripts.py` — vidIQ does not extract these |
+| Which script features track performance | `script_analyzer.py` |
+
+vidIQ's AI Script *Generator* writes new scripts. It does not give you other people's
+scripts, so it doesn't answer "what are they actually doing that I'm not."
+
+Two plan notes: unlimited competitor tracking and AI Daily Ideas sit on the higher
+tier, so check which plan you're on before assuming you have them. And vidIQ's annual
+billing runs far cheaper than month-to-month for the same plan — worth checking your
+invoice.

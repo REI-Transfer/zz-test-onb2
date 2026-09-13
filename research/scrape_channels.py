@@ -4,6 +4,14 @@ Pull full video catalogues for Views To Clients' publicly named client channels
 and score each video the way Trinder says he does it: against its own channel's
 baseline, not against the platform.
 
+IF YOU PAY FOR VIDIQ, YOU MAY NOT NEED THIS. Its Outliers feature already finds
+videos beating their channel's baseline, with filters for outlier score, views
+per hour, subscriber count, publish date, length and type — the same job the
+scoring below does, with a UI and no API key. Use vidIQ for browsing and
+discovery. This script earns its place only when you want the catalogue as a
+joinable dataset: every video as a row you can merge with transcript features
+from script_analyzer.py, which vidIQ cannot export for you.
+
 Needs a YouTube Data API v3 key (free, 10,000 quota units/day):
     Google Cloud Console -> APIs & Services -> Enable "YouTube Data API v3"
     -> Credentials -> Create API key
