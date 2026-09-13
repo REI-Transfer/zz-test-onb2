@@ -41,17 +41,20 @@ KEY = os.environ.get("YOUTUBE_API_KEY", "").strip()
 OUT = Path(__file__).parent / "data"
 
 # Publicly named Views To Clients channels, plus Trinder's own.
-# Handles are best-effort; any that 404 are reported, not silently skipped.
+# Handles confirmed by search where marked; the unconfirmed ones are best-effort
+# and get reported rather than silently skipped if they don't resolve.
+# A "UC..." value is treated as a channel ID instead of a handle.
 TARGETS = [
-    ("Jake Trinder",      "@jaketrinder",   "agency principal"),
-    ("Instantly",         "@instantly-ai",  "GTM SaaS"),
-    ("Clay",              "@clay-gtm",      "GTM SaaS"),
-    ("HeyReach",          "@heyreach",      "GTM SaaS"),
-    ("Hypefury",          "@hypefury",      "GTM SaaS"),
-    ("Castmagic",         "@castmagic",     "GTM SaaS"),
-    ("Glencoco",          "@glencoco",      "GTM SaaS"),
-    ("Sam Piliero",       "@sampiliero",    "solo expert"),
-    ("GaryVee",           "@garyvee",       "media personality"),
+    ("Jake Trinder",      "@jaketrinder",                "agency principal"),   # confirmed
+    ("VTC Testimonials",  "UCo7W4NdrQHLQVOjoShnaLtA",    "agency social proof"),# confirmed, by ID
+    ("Instantly",         "@InstantlyAI",                "GTM SaaS"),           # confirmed
+    ("Clay",              "@GrowWithClay",               "GTM SaaS"),           # confirmed
+    ("HeyReach",          "@heyreach",                   "GTM SaaS"),           # confirmed
+    ("Glencoco",          "@goglencoco",                 "GTM SaaS"),           # confirmed
+    ("Sam Piliero",       "@SamPiliero",                 "solo expert"),        # confirmed
+    ("GaryVee",           "@garyvee",                    "media personality"),  # confirmed
+    ("Hypefury",          "@hypefury",                   "GTM SaaS"),           # unconfirmed
+    ("Castmagic",         "@castmagic",                  "GTM SaaS"),           # unconfirmed
 ]
 
 # Videos younger than this haven't finished accruing views, so they'd drag the
@@ -71,9 +74,10 @@ def get(endpoint, **params):
         raise SystemExit(f"\nAPI error {e.code} on {endpoint}:\n{detail}\n")
 
 
-def resolve_channel(handle):
-    """Handle -> (channel id, uploads playlist id, title, subs). None if absent."""
-    r = get("channels", part="snippet,statistics,contentDetails", forHandle=handle)
+def resolve_channel(ref):
+    """Handle or UC... channel ID -> channel facts. None if it doesn't resolve."""
+    selector = {"id": ref} if ref.startswith("UC") else {"forHandle": ref}
+    r = get("channels", part="snippet,statistics,contentDetails", **selector)
     items = r.get("items") or []
     if not items:
         return None
@@ -149,7 +153,7 @@ def main():
         print(f"  {name:16s} {handle:18s} ", end="", flush=True)
         ch = resolve_channel(handle)
         if not ch:
-            print("handle not found - check it manually")
+            print("did not resolve - check the handle/ID manually")
             missing.append((name, handle))
             continue
 

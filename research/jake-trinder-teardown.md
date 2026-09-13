@@ -22,8 +22,19 @@ Consequences:
 - The client roster is the **publicly named subset** of 50+ channels.
 - All performance figures are **his own unverified marketing claims**.
 
-To get real video data you need a session without the egress restriction, or the
-YouTube Data API with a key.
+**Apify doesn't rescue this either.** Its actors are the right tool, but
+`api.apify.com` and `console.apify.com` are blocked by the same policy (403 at
+CONNECT), so Apify only helps if run from an unrestricted machine. The one route
+that *is* open is the official YouTube Data API on `googleapis.com`, which is
+reachable and needs only a free key — see `research/scrape_channels.py`.
+
+A second collection pass recovered more than expected without any of that: a
+working corpus of real video titles from client channels, the correct channel
+handles, client reviews, and competitor pricing. Section 3A below is built
+entirely from that evidence.
+
+Still missing and strictly quantitative: per-video view counts, publish cadence,
+retention proxies, and transcripts.
 
 ---
 
@@ -51,9 +62,13 @@ Scale, per his own September 2026 job ad:
 
 He doesn't publish rates, but he published both numbers needed to bracket them:
 **$335,000 ÷ 50+ channels ≈ $6,700/month average retainer, or less.** Some of that MRR
-is likely the training product, pushing the true per-channel average lower. That sits
-well below the €10–30k/month band typical of full-service YouTube agencies — a volume
-operation with systematised delivery, not a boutique.
+is likely the training product, pushing the true per-channel average lower.
+
+Against the market that lands him mid-to-upper but not premium. B2B YouTube agencies
+run **$2,000–$15,000/month**, boutiques at $2,500–$5,000; ContentBuck starts at $1,599
+for production and $3,000 for full growth retainers, Vidico from $5,000. He is neither
+the cheap option nor the expensive one — a volume operation priced where the work is
+defensible but the margin comes from throughput.
 
 ---
 
@@ -75,6 +90,12 @@ Nine clients are publicly named or self-identified — roughly a fifth of the bo
 
 All figures self-reported in marketing and recruiting material. None independently
 verified; none carry a stated attribution methodology.
+
+**Confirmed handles** for anyone pulling these directly: `@InstantlyAI`,
+`@GrowWithClay`, `@heyreach`, `@goglencoco`, `@SamPiliero`, `@garyvee`,
+`@jaketrinder`, plus a separate "Results & Testimonials" channel at
+`UCo7W4NdrQHLQVOjoShnaLtA`. Several differ from the obvious guess — Clay is not
+`@clay`, Glencoco is not `@glencoco`.
 
 ### The pattern worth stealing
 
@@ -123,6 +144,67 @@ narrow vertical.
 
 ---
 
+## 3A. Packaging, observed — the formula off his clients' real titles
+
+This part doesn't rely on taking his word for anything. Real titles from channels he
+runs; the devices repeat across unrelated clients, which is what a house formula looks
+like from outside.
+
+**Sam Piliero — Facebook ads (`@SamPiliero`)**
+
+| Title | Device |
+|---|---|
+| If I Started Facebook Ads in 2026, I'd Do This | Reset premise |
+| How to ACTUALLY Scale Facebook Ads for Ecommerce | Corrective |
+| The Right Way to Scale Your Facebook Ads in 2025 | Corrective + year |
+| 42 Ways To Instantly Make Your Ads More Profitable | Odd specific count |
+| 13 Ways to BEAT Your Competitors Facebook Ads | Odd count + caps |
+| I Found a BETTER Way to Advertise on Facebook in 2025 | First-person discovery |
+
+**Glencoco — B2B sales platform (`@goglencoco`)**
+
+| Title | Note |
+|---|---|
+| Make extra income with Glencoco | **21 views — before** |
+| Making $2000 in a Week Cold Calling | **15 views — before** |
+| Easily making $6,300 a month with this side-hustle | **24 views — before** |
+| speedrunning cold calls from $0 to first sale (i show everything) | Documentary |
+| speedrunning cold calls till I make $1000 (i show everything) | Same device, reused |
+| watch me book 10 sales calls in 10 hours | Constraint challenge |
+| How This Beginner Made $10,821 with Cold Calling | Unrounded number |
+
+### What the Glencoco channel shows
+
+The first three sit on the same channel as the rest and did **15, 21 and 24 views**.
+They're company-voice and benefit-led — "make extra income", "easily making". What
+followed is first-person, documented, specific: *speedrunning*, *watch me*, *$10,821*.
+
+This is the strongest evidence in the teardown because it's a before-and-after inside
+one channel, not a comparison across two. The subject didn't change. The packaging did.
+
+### Six devices doing the work
+
+1. **Unrounded numbers.** $10,821, not "over $10k". 42 ways, 13 ways — never 10 or 15.
+   Precision reads as a receipt, not a marketing estimate.
+2. **Corrective framing.** "ACTUALLY", "The Right Way", "I Found a BETTER Way." Implies
+   the viewer's current method is wrong — converts idle interest into an unresolved
+   correction.
+3. **The reset premise.** "If I Started X in 2026, I'd Do This" lets an expert restate
+   fundamentals without condescension. Squarely the "embarrassed to ask" thesis,
+   packaged so nobody has to admit they're asking.
+4. **Transparency parentheticals.** "(i show everything)" appears twice verbatim on one
+   channel. A device reused unchanged is a tested device, not a flourish.
+5. **Consumer register in B2B.** *speedrunning*, lowercase, *watch me* — gaming and vlog
+   conventions applied to cold calling. His format-transplant thesis executing literally.
+6. **Year-stamping.** "in 2025", "for 2026". Cheap recency signal, and it licenses
+   re-making the winning video annually — throughput disguised as freshness.
+
+**Caveat:** the titles are real; the view counts are partial. Search surfaced a handful,
+not a distribution, so I can't yet say which formats won *most*, or how each channel's
+median moved. That's the gap `scrape_channels.py` closes.
+
+---
+
 ## 04. What's actually in the service
 
 His recruiting ads are the most honest spec he's published. Delivery unit:
@@ -148,6 +230,30 @@ positioning → client records → edit → upload with SEO → performance read
 - Upload, SEO, channel admin — genuinely low-skill, don't pay agency rates
 - Outlier research tooling: ViewStats, vidIQ, 1of10, OutlierKit
 - Funnel wiring — one-time build, highest-ROI free thing here
+
+---
+
+## 4A. Reception — what clients say when he isn't the one saying it
+
+Views To Clients holds **4 stars on Trustpilot across 10 reviews**. Independent client
+accounts include a channel taken from 100 to 12,000+ subscribers over ~8 months, and
+another that more than doubled subscribers on five released videos while contracting
+over $40k at a claimed 70% close rate on channel-sourced calls.
+
+One review is pointed in a useful way: the team are *"experts at titles, thumbnails, and
+video positioning"* but *"communication with clients is a little lackluster"*, with *"a
+couple of minor operational things they can fix."* Another calls the difference against
+a previous agency "night and day."
+
+**The number worth noticing:** ten reviews is a thin public footprint for an agency
+claiming 50+ active channels and $335k/month. Not evidence of anything wrong — B2B
+retainer clients rarely post to Trustpilot — but the outside verification available on
+this business is much smaller than its stated scale. A 4-star average on ten entries is
+not due diligence.
+
+Read against the roster, the signal is consistent: **the part clients praise is the part
+you can't easily hire, and the part they criticise is the part you'd do better
+yourself.**
 
 ---
 
@@ -189,11 +295,17 @@ reconstruction.
 taste and idea-selection instinct built from 1,000+ videos of feedback in one vertical.
 That gap is real, and it's what he's actually charging for.
 
-**The honest economics.** Running this in-house means a strategist who can do idea
-selection and packaging, plus an editor and a thumbnail designer — realistically
-$8–15k/month all-in. That is *not* obviously cheaper than his derived ~$6.7k/month
-average retainer. The genuinely free path is slower: you personally run the
-research-and-packaging loop for three to six months, trading time for calibration.
+**But the formula is more copyable than the pitch implies.** Section 3A reconstructs six
+repeatable packaging devices off his own clients' titles, and the Glencoco
+before-and-after shows what they're worth on an unchanged subject. Not the whole
+calibration, but a working starting grammar you now have for nothing — and it's the part
+he sells.
+
+**The honest economics.** In-house means a strategist doing idea selection and packaging,
+plus an editor and a thumbnail designer — realistically $8–15k/month all-in, against his
+derived ~$6.7k and a market running $2–15k. DIY is *not* automatically cheaper. The
+genuinely free path is slower: you personally run the research-and-packaging loop for
+three to six months, trading time for calibration.
 
 **Recommendation.** Steal the method now — it costs nothing, and the funnel-wiring step
 alone is worth doing this month. Run the loop yourself for one quarter at one video a
@@ -201,6 +313,11 @@ week. That quarter prices the agency for you: if your packaging instincts sharpe
 pipeline moves, keep it in-house; if you're twelve weeks in and still guessing at
 titles, you've learned exactly what you'd be buying, and ~$6.7k/month is a fair price
 for it.
+
+**One asymmetry worth exploiting either way.** Clients praise the craft and flag the
+account management. If you hire him, set expectations on the operational side hard up
+front. If you don't, note that the weak half of his service is the half you'd naturally
+cover yourself.
 
 ---
 
