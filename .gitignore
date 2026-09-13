@@ -37,3 +37,6 @@ yarn-error.log*
 next-env.d.ts
 
 research/data/
+__pycache__/
+*.pyc
+research/scripts/benchmark/
