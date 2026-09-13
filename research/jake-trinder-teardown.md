@@ -205,6 +205,56 @@ median moved. That's the gap `scrape_channels.py` closes.
 
 ---
 
+## 3B. Scripts — there is no word-for-word script to copy
+
+Worth checking properly, and the answer is more useful than a template: across his
+public work a large share of the output **isn't scripted at all**. The structure lives
+in format choice and edit assembly, not in prose read to camera.
+
+### The Gary Vaynerchuk build settles it
+
+Vaynerchuk recorded **nothing new**. Trinder built the videos from existing keynote
+footage and took him from an average of 5–10k views to **1M long-form views in 90 days**.
+The first video was *"The New Rules of Social Media (2026)"* — a format he'd seen work in
+other markets, applied to a subject Vaynerchuk already had credibility in. It did 300k+.
+
+You cannot copy a script from that engagement because one never existed. What was copied
+was a *format*; what was written was an *edit order*.
+
+### Two production modes, not one
+
+| | Assembled — no script | Scripted — talking head |
+|---|---|---|
+| **Who** | Vaynerchuk (keynote footage), Glencoco's documentary series | Sam Piliero, SaaS explainers |
+| **Evidence** | "speedrunning cold calls", "watch me book 10 sales calls in 10 hours", "(i show everything)" — you can't script a live cold call | "42 Ways To Instantly Make Your Ads More Profitable", "How to ACTUALLY Scale Facebook Ads" — enumerated, delivered to camera |
+| **Where the craft sits** | Choosing the format, then imposing narrative shape in the edit. Writing is selection and sequencing. | Title sets a countable promise; the script discharges it in order. |
+
+### What his own hiring tells you
+
+He advertises for strategists, researchers, thumbnail designers and lead editors.
+**No scriptwriter role appears in any posting found.** Scripting shows up as one step the
+strategist owns alongside ideation and research — not a separate craft with its own hire.
+Against a dedicated thumbnail designer shipping 100+ a month, that's a clear statement of
+where he thinks the leverage is.
+
+### The honest limit
+
+No transcripts were obtainable, so this is inference from titles, formats, hiring and one
+documented build — not from reading his scripts. Confirming a house style needs
+transcripts, which need an Apify actor or an unrestricted machine. The structural
+fingerprint those would produce is what `script_analyzer.py --benchmark` computes.
+
+### The more useful reframe
+
+A copied script inherits someone else's voice, audience and offer, and you still can't
+tell which parts are load-bearing. The transferable unit isn't prose — it's the **promise
+structure**: the title makes a specific, countable, correctable claim, and the script
+exists to discharge it in order. "42 Ways" is a contract for 42 items. "The Right Way to
+Scale" is a contract to correct a belief. Both are structures you can write into today in
+your own voice, without a line of his copy.
+
+---
+
 ## 04. What's actually in the service
 
 His recruiting ads are the most honest spec he's published. Delivery unit:
