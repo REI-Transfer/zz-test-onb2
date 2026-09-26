@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Generate "Get It Sold" logo concepts via Kie.ai (gpt-image-2-text-to-image).
-Two layouts from the mockups: stacked (house over sign) and horizontal (house left of text),
-each on a light and a navy background. Brand colors: navy #1E2A4A, gold #D4923A.
+Modern take on the mockups: floating gold roof over a solid house mark, "GET IT" over a
+justified gold "SOLD" tag; stacked + horizontal (light/dark) and an app icon. Brand colors: navy #1E2A4A, gold #D4923A.
 Run from repo root: python3 .imggen/logo_gen.py  (skips files that already exist)
 """
 import os, sys, json, time, requests
@@ -9,27 +9,28 @@ import os, sys, json, time, requests
 API_KEY = os.environ.get("KIE_API_KEY")
 if not API_KEY:
     sys.exit("ERROR: KIE_API_KEY not set")
-OUT = os.path.join(os.path.dirname(__file__), "..", "public", "images", "logo")
+OUT = os.path.join(os.path.dirname(__file__), "..", "public", "images", "logo", "gpt-image-2")
 os.makedirs(OUT, exist_ok=True)
 
-STYLE = ("Professional vector logo for a real estate home-buying company, flat design, crisp clean "
-         "geometric lines, no gradients, no shadows, no mockup, no extra text, perfectly centered, "
-         "generous padding. Colors: deep navy blue #1E2A4A and warm gold #D4923A only. Bold modern "
-         "geometric sans-serif typography. The words must be spelled exactly \"GET IT\" and \"SOLD\".")
+STYLE = ("Modern minimalist brand logo for a real estate home-buying company, in the style of a 2025 "
+         "tech/fintech startup identity. Flat vector, bold simple geometry, solid filled shapes, "
+         "consistent rounded corners, generous negative space, no gradients, no shadows, no 3D, no mockup, "
+         "no taglines or extra text, perfectly centered with generous padding. Colors: deep navy #1E2A4A, "
+         "warm gold #D4923A and white only. Bold geometric sans-serif (like Montserrat ExtraBold), tight "
+         "letter spacing. The words must be spelled exactly \"GET IT\" and \"SOLD\".")
+
+HOUSE = ("a solid filled navy house silhouette with softly rounded corners and an arched doorway cut out as "
+         "negative space, a small navy chimney, and a thick gold roof chevron floating just above the house "
+         "with a clean gap")
+WORDS = ("bold text \"GET IT\" with, directly underneath and exactly the same width, a gold rounded-rectangle "
+         "tag containing widely spaced white bold text \"SOLD\"")
 
 PROMPTS = {
- "get-it-sold-stacked-light": ("1:1", "A simple house outline: a gold pitched roof line with a small navy chimney, "
-     "sitting over a navy rectangular yard-sign frame. Inside the frame, bold navy text \"GET IT\" above a gold "
-     "rounded pill badge containing white bold text \"SOLD\". Solid off-white background."),
- "get-it-sold-stacked-dark": ("1:1", "A simple house outline: a gold pitched roof line with a small white chimney, "
-     "sitting over a white rectangular yard-sign frame. Inside the frame, bold white text \"GET IT\" above a gold "
-     "rounded pill badge containing white bold text \"SOLD\". Solid deep navy #1E2A4A background."),
- "get-it-sold-horizontal-light": ("3:2", "Horizontal logo lockup. On the left, a minimal house icon: gold pitched "
-     "roof line, small navy chimney, navy house walls with a doorway. On the right, bold navy text \"GET IT\" "
-     "stacked above a gold rounded pill badge with white bold text \"SOLD\". Solid off-white background."),
- "get-it-sold-horizontal-dark": ("3:2", "Horizontal logo lockup. On the left, a minimal house icon: gold pitched "
-     "roof line, small white chimney, white house walls with a doorway. On the right, bold white text \"GET IT\" "
-     "stacked above a gold rounded pill badge with white bold text \"SOLD\". Solid deep navy #1E2A4A background."),
+ "get-it-sold-modern-stacked-light": ("1:1", f"Vertical lockup: {HOUSE}, centered above navy {WORDS}. Solid off-white #F2F3F7 background."),
+ "get-it-sold-modern-stacked-dark": ("1:1", f"Vertical lockup: {HOUSE.replace('navy', 'white')}, centered above white {WORDS}. Solid deep navy #1E2A4A background."),
+ "get-it-sold-modern-horizontal-light": ("3:2", f"Horizontal lockup: on the left, {HOUSE}; on the right, navy {WORDS}. Solid off-white #F2F3F7 background."),
+ "get-it-sold-modern-horizontal-dark": ("3:2", f"Horizontal lockup: on the left, {HOUSE.replace('navy', 'white')}; on the right, white {WORDS}. Solid deep navy #1E2A4A background."),
+ "get-it-sold-modern-icon": ("1:1", f"App icon: only {HOUSE.replace('navy', 'white')}, no text, on a deep navy #1E2A4A rounded square."),
 }
 
 def gen(name, aspect, subject):

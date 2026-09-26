@@ -63,6 +63,41 @@ def horizontal(ink):
     words, _ = wordmark(470, 88, 62, ink)
     return chim + roof + walls + door + words
 
+def text_left(s, x, baseline, cap_px, fill, track=-0.01):
+    t, w = text(s, 0, baseline, cap_px, fill, track)
+    return f'<g transform="translate({x + w / 2:.2f} 0)">{t}</g>', w
+
+def house_mark(ink, uid):
+    """Modern mark: floating gold roof chevron over a solid house with an arched door cut out."""
+    chim = f'<rect x="136" y="30" width="18" height="44" rx="4" fill="{ink}"/>'
+    roof = (f'<path d="M22 100 L100 32 L178 100" fill="none" stroke="{GOLD}" stroke-width="18" '
+            f'stroke-linecap="round" stroke-linejoin="round"/>')
+    mask = (f'<mask id="door-{uid}"><rect width="200" height="240" fill="#fff"/>'
+            f'<path d="M86 214 V168 a14 14 0 0 1 28 0 V214 Z" fill="#000"/></mask>')
+    body = (f'<path d="M44 109 L100 60 L156 109 V204 H44 Z" fill="{ink}" stroke="{ink}" stroke-width="10" '
+            f'stroke-linejoin="round" mask="url(#door-{uid})"/>')
+    return mask + chim + roof + body
+
+def modern_words(x, top, cap, ink, center=False):
+    """"GET IT" with a justified gold "SOLD" tag of the same width underneath."""
+    _, gw = text("GET IT", 0, 0, cap, ink, -0.01)
+    x0 = x - gw / 2 if center else x
+    get, _ = text_left("GET IT", x0, top + cap, cap, ink)
+    ph, pt = cap * 1.08, top + cap * 1.28
+    sold, _ = text("SOLD", x0 + gw / 2, pt + ph / 2 + cap * 0.78 / 2, cap * 0.78, WHITE, 0.16)
+    pill = f'<rect x="{x0:.1f}" y="{pt:.1f}" width="{gw:.1f}" height="{ph:.1f}" rx="{ph * 0.3:.1f}" fill="{GOLD}"/>'
+    return get + pill + sold
+
+def modern_horizontal(ink, uid):
+    return house_mark(ink, uid) + modern_words(214, 62, 58, ink)
+
+def modern_stacked(ink, uid):
+    return (f'<g transform="translate(136 50) scale(1.2)">{house_mark(ink, uid)}</g>'
+            + modern_words(256, 336, 46, ink, center=True))
+
+def modern_icon(ink, uid):
+    return f'<g transform="translate(28 10)">{house_mark(ink, uid)}</g>'
+
 os.makedirs(OUT, exist_ok=True)
 variants = {
     "stacked": (512, 512, stacked),
@@ -72,4 +107,14 @@ for name, (w, h, fn) in variants.items():
     for tone, ink, bg in (("light", NAVY, OFFWHITE), ("dark", WHITE, NAVY)):
         open(os.path.join(OUT, f"get-it-sold-{name}-{tone}.svg"), "w").write(svg(w, h, fn(ink), bg))
         open(os.path.join(OUT, f"get-it-sold-{name}-{tone}-transparent.svg"), "w").write(svg(w, h, fn(ink), None))
+modern = {
+    "stacked": (512, 512, modern_stacked),
+    "horizontal": (500, 240, modern_horizontal),
+    "icon": (256, 256, modern_icon),
+}
+for name, (w, h, fn) in modern.items():
+    for tone, ink, bg in (("light", NAVY, OFFWHITE), ("dark", WHITE, NAVY)):
+        uid = f"{name}-{tone}"
+        open(os.path.join(OUT, f"get-it-sold-modern-{name}-{tone}.svg"), "w").write(svg(w, h, fn(ink, uid), bg))
+        open(os.path.join(OUT, f"get-it-sold-modern-{name}-{tone}-transparent.svg"), "w").write(svg(w, h, fn(ink, uid), None))
 print("wrote", sorted(os.listdir(OUT)))
